@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Min profil – SBS</title>
+    <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+    <header>
+        <div class="header-content">
+        <img src="logo-placeholder.png" alt="SBS Logo" />
+    <nav id="main-nav">
+        <a href="index.html" class="nav-link">Hjem</a>
+        <a href="sanger.html" class="nav-link">Sanger</a>
+        <a href="betaling.html" class="nav-link">Betaling</a>
+        <a href="profil.html" class="nav-link active">Min profil</a>
+        <a href="#" id="logout-link" class="nav-link">Logg ut</a>
+    </nav>
+        </div>
+    </header>
+
+    <section class="hero hero-small">
+        <h1>Min profil</h1>
+        <p>Velkommen tilbake!</p>
+    </section>
+
+    <div class="container">
+        <div class="card" id="profile-card">
+        <h2>Profilinformasjon</h2>
+        <div id="profile-info">
+            <p>Laster profil...</p>
+        </div>
+        <button id="logout-btn" class="btn" style="margin-top: var(--space-lg);">Logg ut</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>SBS – Stabæk Bandy Support</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supa = supabase.createClient(
+        "https://mqkoeaswvafrhyyotpqh.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xa29lYXN3dmFmcmh5eW90cHFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1ODMzMDAsImV4cCI6MjA4MDE1OTMwMH0.wQAcQFlUp77_46ycqfB--ywEN7uL5hRK0TdAy2PWkQs"
+        );
+
+        // Sjekk innloggingsstatus
+        async function checkAuth() {
+        const { data: { session } } = await supa.auth.getSession();
+        
+        if (!session) {
+            window.location.href = "Inlogging.html";
+            return;
+        }
+
+        // Hent brukerdata fra members-tabellen
+        const { data: memberData, error } = await supa
+            .from("members")
+            .select("*")
+            .eq("auth_id", session.user.id)
+            .single();
+
+        const user = session.user;
+        const userMetadata = user.user_metadata || {};
+        
+        const profileInfo = document.getElementById("profile-info");
+        
+        if (error && error.code !== 'PGRST116') {
+            console.error("Feil ved henting av profil:", error);
+        }
+
+        const fullName = memberData?.full_name || userMetadata.full_name || user.email?.split('@')[0] || "Bruker";
+        const email = user.email || "Ikke oppgitt";
+        const phone = memberData?.phone || userMetadata.phone || "Ikke oppgitt";
+        const fanType = memberData?.bandy_fan_type || "SBS supporter";
+
+        profileInfo.innerHTML = `
+            <p><strong>Navn:</strong> ${fullName}</p>
+            <p><strong>E-post:</strong> ${email}</p>
+            <p><strong>Telefonnummer:</strong> ${phone}</p>
+            <p><strong>Type:</strong> ${fanType}</p>
+        `;
+        }
+
+        // Logg ut funksjon
+        async function logout() {
+        const { error } = await supa.auth.signOut();
+        if (error) {
+            alert("Feil ved utlogging: " + error.message);
+        } else {
+            window.location.href = "index.html";
+        }
+        }
+
+        // Event listeners
+        document.getElementById("logout-btn").addEventListener("click", logout);
+        document.getElementById("logout-link")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        logout();
+        });
+
+        // Sjekk auth når siden lastes
+        checkAuth();
+    </script>
+    </body>
+</html>
+

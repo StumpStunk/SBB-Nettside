@@ -10,12 +10,14 @@
 <header>
   <div class="header-content">
     <img src="logo-placeholder.png" alt="SBS Logo" />
-    <nav>
+    <nav id="main-nav">
       <a href="index.html" class="nav-link active">Hjem</a>
       <a href="sanger.html" class="nav-link">Sanger</a>
       <a href="betaling.html" class="nav-link">Betaling</a>
-      <a href="Inlogging.html" class="nav-link">Logg inn</a>
-      <a href="registrer.html" class="nav-link">Registrer</a>
+      <a href="Inlogging.html" class="nav-link auth-link">Logg inn</a>
+      <a href="registrer.html" class="nav-link auth-link">Registrer</a>
+      <a href="profil.html" class="nav-link profile-link" style="display: none;">Min profil</a>
+      <a href="#" id="logout-link" class="nav-link profile-link" style="display: none;">Logg ut</a>
     </nav>
   </div>
 </header>
@@ -55,5 +57,42 @@
     "https://mqkoeaswvafrhyyotpqh.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xa29lYXN3dmFmcmh5eW90cHFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1ODMzMDAsImV4cCI6MjA4MDE1OTMwMH0.wQAcQFlUp77_46ycqfB--ywEN7uL5hRK0TdAy2PWkQs"
   );
+
+  // Oppdater navigasjon basert på innloggingsstatus
+  async function updateNavigation() {
+    const { data: { session } } = await supa.auth.getSession();
+    const authLinks = document.querySelectorAll('.auth-link');
+    const profileLinks = document.querySelectorAll('.profile-link');
+    const logoutLink = document.getElementById('logout-link');
+
+    if (session) {
+      // Bruker er innlogget - skjul "Logg inn" og "Registrer", vis "Min profil" og "Logg ut"
+      authLinks.forEach(link => link.style.display = 'none');
+      profileLinks.forEach(link => link.style.display = 'block');
+    } else {
+      // Bruker er ikke innlogget - vis "Logg inn" og "Registrer", skjul "Min profil" og "Logg ut"
+      authLinks.forEach(link => link.style.display = 'block');
+      profileLinks.forEach(link => link.style.display = 'none');
+    }
+
+    // Legg til logout-funksjonalitet
+    if (logoutLink) {
+      logoutLink.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const { error } = await supa.auth.signOut();
+        if (!error) {
+          window.location.reload();
+        }
+      });
+    }
+  }
+
+  // Kjør når siden lastes
+  updateNavigation();
+
+  // Lytte på auth-endringer
+  supa.auth.onAuthStateChange(() => {
+    updateNavigation();
+  });
 </script>
 </html>
