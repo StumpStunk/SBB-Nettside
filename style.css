@@ -1,0 +1,361 @@
+/* SBB Styling – hovedfarger: mørk blå, lys blå og sort */
+
+:root {
+    --blue-dark: #002f6c;
+    --blue-light: #4da3ff;
+    --black: #000000;
+    --white: #ffffff;
+    --blue-hover: #0066cc;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+    color: var(--blue-dark);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  
+  header {
+    background: linear-gradient(135deg, var(--blue-dark) 0%, #004080 100%);
+    padding: 0;
+    color: var(--white);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  .header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  header img {
+    height: 70px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    transition: transform 0.3s ease;
+  }
+  
+  header img:hover {
+    transform: scale(1.05);
+  }
+  
+  nav {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+  
+  .nav-link {
+    color: var(--white);
+    text-decoration: none;
+    padding: 12px 24px;
+    font-weight: 600;
+    font-size: 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+  
+  .nav-link:hover::before {
+    left: 100%;
+  }
+  
+  .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: var(--blue-light);
+    transform: translateY(-2px);
+  }
+  
+  .nav-link.active {
+    background-color: var(--blue-light);
+    color: var(--white);
+    box-shadow: 0 4px 12px rgba(77, 163, 255, 0.4);
+  }
+  
+  .nav-link.active:hover {
+    background-color: var(--blue-hover);
+    transform: translateY(-2px);
+  }
+  
+  .hero {
+    background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-light) 100%);
+    color: var(--white);
+    padding: 100px 20px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: pulse 15s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+  }
+  
+  .hero h1 {
+    position: relative;
+    z-index: 1;
+    font-size: 2.5em;
+    margin: 0 0 15px 0;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+    animation: fadeInUp 0.8s ease-out;
+  }
+  
+  .hero p {
+    position: relative;
+    z-index: 1;
+    font-size: 1.2em;
+    opacity: 0.95;
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .container {
+    max-width: 1000px;
+    margin: 50px auto;
+    padding: 0 20px;
+  }
+  
+  .card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    color: var(--blue-dark);
+    padding: 35px;
+    margin: 25px 0;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 47, 108, 0.15);
+    border-left: 6px solid var(--blue-light);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(77, 163, 255, 0.05) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .card:hover {
+    box-shadow: 0 12px 32px rgba(0, 47, 108, 0.25);
+    border-left-color: var(--blue-dark);
+  }
+  
+  .card:hover::before {
+    opacity: 1;
+  }
+  
+  .card h2 {
+    color: var(--blue-dark);
+    margin-top: 0;
+    font-size: 1.8em;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .card ul {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .card li {
+    margin: 10px 0;
+    padding-left: 5px;
+  }
+  
+  .btn {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-hover) 100%);
+    color: var(--white);
+    padding: 16px 32px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 16px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 47, 108, 0.3);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+  
+  .btn:hover::before {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 47, 108, 0.4);
+    background: linear-gradient(135deg, var(--blue-hover) 0%, var(--blue-dark) 100%);
+  }
+  
+  .btn span {
+    position: relative;
+    z-index: 1;
+  }
+  
+  textarea {
+    border: 2px solid var(--blue-light);
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 16px;
+    resize: vertical;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    background: #ffffff;
+    color: var(--blue-dark);
+    width: 100%;
+  }
+  
+  textarea:focus {
+    outline: none;
+    border-color: var(--blue-dark);
+    box-shadow: 0 0 0 3px rgba(77, 163, 255, 0.2);
+    transform: translateY(-2px);
+  }
+
+  /* Skjemaer: innlogging og registrering */
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  label {
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"] {
+    border: 2px solid var(--blue-light);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 16px;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    background: #ffffff;
+    color: var(--blue-dark);
+    width: 100%;
+  }
+
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus,
+  input[type="tel"]:focus {
+    outline: none;
+    border-color: var(--blue-dark);
+    box-shadow: 0 0 0 3px rgba(77, 163, 255, 0.2);
+    transform: translateY(-1px);
+  }
+  
+  footer {
+    background: linear-gradient(135deg, var(--blue-dark) 0%, #001a3d 100%);
+    color: var(--white);
+    text-align: center;
+    padding: 40px 25px;
+    margin-top: 80px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  footer p {
+    margin: 8px 0;
+    opacity: 0.9;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .header-content {
+      flex-direction: column;
+      padding: 20px;
+    }
+    
+    nav {
+      width: 100%;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .nav-link {
+      padding: 10px 16px;
+      font-size: 14px;
+    }
+    
+    .hero h1 {
+      font-size: 2em;
+    }
+    
+    .hero p {
+      font-size: 1em;
+    }
+    
+    .card {
+      padding: 25px;
+    }
+  }

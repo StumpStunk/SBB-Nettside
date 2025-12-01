@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Logg inn – SBB</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="header-content">
+    <img src="logo-placeholder.png" alt="SBB Logo" />
+    <nav>
+      <a href="index.html" class="nav-link">Hjem</a>
+      <a href="sanger.html" class="nav-link">Sanger</a>
+      <a href="betaling.html" class="nav-link">Betaling</a>
+      <a href="Inlogging.html" class="nav-link active">Logg inn</a>
+      <a href="registrer.html" class="nav-link">Registrer</a>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+    <div class="card">
+        <h2>Logg inn på din konto</h2>
+        <form action="dashboard.html" method="POST">
+            <label for="email">E‑post:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">Passord:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit" class="btn">Logg inn</button>
+        </form>
+        <p>Har du ikke konto? <a href="registrer.html">Registrer deg her</a>.</p>
+    </div>
+</div>
+
+<footer>
+    <p>SBB – Stabæk Bandy Support</p>
+</footer>
+
+</body>
+</html>
