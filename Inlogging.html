@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Logg inn – SBB</title>
+    <title>Logg inn – SBS</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
   <div class="header-content">
-    <img src="logo-placeholder.png" alt="SBB Logo" />
+    <img src="logo-placeholder.png" alt="SBS Logo" />
     <nav>
       <a href="index.html" class="nav-link">Hjem</a>
       <a href="sanger.html" class="nav-link">Sanger</a>
@@ -38,13 +38,12 @@
 </div>
 
 <footer>
-    <p>SBB – Stabæk Bandy Support</p>
+    <p>SBS – Stabæk Bandy Support</p>
 </footer>
 
 </body>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  // Bytt ut URL og KEY med ditt eget Supabase-prosjekt
   const supa = supabase.createClient(
     "https://mqkoeaswvafrhyyotpqh.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xa29lYXN3dmFmcmh5eW90cHFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1ODMzMDAsImV4cCI6MjA4MDE1OTMwMH0.wQAcQFlUp77_46ycqfB--ywEN7uL5hRK0TdAy2PWkQs"
@@ -67,7 +66,6 @@
     }
 
     alert("Innlogging vellykket!");
-    // Etter innlogging: send bruker tilbake til forsiden (eller bytt til en annen side om du vil)
     window.location.href = "index.html";
   }
 </script>

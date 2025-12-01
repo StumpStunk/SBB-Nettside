@@ -3,13 +3,13 @@
     <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SBB Registrering</title>
+    <title>SBS Registrering</title>
     <link rel="stylesheet" href="style.css" />
     </head>
     <body>
     <header>
       <div class="header-content">
-        <img src="logo-placeholder.png" alt="SBB Logo" />
+        <img src="logo-placeholder.png" alt="SBS Logo" />
         <nav>
           <a href="index.html" class="nav-link">Hjem</a>
           <a href="sanger.html" class="nav-link">Sanger</a>
@@ -21,7 +21,7 @@
     </header>
 
     <div class="hero">
-    <h2>Bli medlem av SBB</h2>
+    <h2>Bli medlem av SBS</h2>
     <p>Fyll inn informasjonen under for å opprette en profil.</p>
     </div>
 
@@ -50,12 +50,11 @@
     </div>
 
     <footer>
-    <p>© 2025 SBB – Stabæk Bandy Support</p>
+    <p>© 2025 SBS – Stabæk Bandy Support</p>
     </footer>
     </body>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-    // Bytt ut URL og KEY med ditt eget Supabase-prosjekt
     const supa = supabase.createClient(
       "https://mqkoeaswvafrhyyotpqh.supabase.co",
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xa29lYXN3dmFmcmh5eW90cHFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1ODMzMDAsImV4cCI6MjA4MDE1OTMwMH0.wQAcQFlUp77_46ycqfB--ywEN7uL5hRK0TdAy2PWkQs"
@@ -68,7 +67,14 @@
       const pass = document.getElementById("password").value;
       const name = document.getElementById("name").value;
       const phone = document.getElementById("phone").value;
-    
+      const passwordConfirm = document.getElementById("password_confirm").value;
+
+      // Valider at passordene matcher
+      if (pass !== passwordConfirm) {
+        alert("Passordene matcher ikke!");
+        return;
+      }
+
       // Opprett bruker hos Supabase Auth
       const { data, error } = await supa.auth.signUp({
         email: email,
@@ -86,15 +92,20 @@
         return;
       }
     
-      // Legg bruker i members-tabellen (eksempel på ekstra data)
-      await supa.from("members").insert({
+      const { error: insertError } = await supa.from("members").insert({
         auth_id: data.user.id,
         full_name: name,
         phone: phone,
-        bandy_fan_type: "SBB supporter"
+        bandy_fan_type: "SBS supporter"
       });
     
-      alert("Bruker registrert!");
+      if (insertError) {
+        console.error("Feil ved lagring i members-tabellen:", insertError);
+      }
+    
+      alert("Registrering vellykket! Sjekk e-posten din for å bekrefte kontoen din. En bekreftelseslink er sendt til " + email);
+      
+      window.location.href = "Inlogging.html";
     }
 </script>   
 </html>

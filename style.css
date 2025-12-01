@@ -1,11 +1,32 @@
-/* SBB Styling – hovedfarger: mørk blå, lys blå og sort */
+
 
 :root {
-    --blue-dark: #002f6c;
-    --blue-light: #4da3ff;
-    --black: #000000;
-    --white: #ffffff;
-    --blue-hover: #0066cc;
+    --blue-dark: rgba(0, 47, 108, 1);
+    --blue-light: rgba(77, 163, 255, 1);
+    --blue-hover: rgba(0, 102, 204, 1);
+    --black: rgba(0, 0, 0, 1);
+    --white: rgba(255, 255, 255, 1);
+
+    --bg-body-start: rgba(245, 247, 250, 1);
+    --bg-body-end: rgba(232, 236, 241, 1);
+    --bg-footer-dark: rgba(0, 26, 61, 1);
+
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 40px;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+
+    --shadow-soft: 0 4px 15px rgba(0, 47, 108, 0.15);
+    --shadow-strong: 0 12px 32px rgba(0, 47, 108, 0.25);
+
+    --font-size-base: 16px;
+    --font-size-heading: 2.5rem;
+    --font-size-card-title: 1.8rem;
   }
   
   * {
@@ -15,14 +36,15 @@
   body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+    font-size: var(--font-size-base);
+    background: linear-gradient(135deg, var(--bg-body-start) 0%, var(--bg-body-end) 100%);
     color: var(--blue-dark);
     line-height: 1.6;
     min-height: 100vh;
   }
   
   header {
-    background: linear-gradient(135deg, var(--blue-dark) 0%, #004080 100%);
+    background: linear-gradient(135deg, var(--blue-dark) 0%, rgba(0, 64, 128, 1) 100%);
     padding: 0;
     color: var(--white);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
@@ -37,7 +59,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 15px 30px;
+    padding: var(--space-md) var(--space-xl);
     flex-wrap: wrap;
     gap: 20px;
   }
@@ -54,14 +76,14 @@
   
   nav {
     display: flex;
-    gap: 5px;
+    gap: var(--space-xs);
     align-items: center;
   }
   
   .nav-link {
     color: var(--white);
     text-decoration: none;
-    padding: 12px 24px;
+    padding: 12px var(--space-lg);
     font-weight: 600;
     font-size: 16px;
     border-radius: 8px;
@@ -111,6 +133,10 @@
     position: relative;
     overflow: hidden;
   }
+
+  .hero-small {
+    padding: 60px 20px;
+  }
   
   .hero::before {
     content: '';
@@ -159,17 +185,17 @@
   
   .container {
     max-width: 1000px;
-    margin: 50px auto;
-    padding: 0 20px;
+    margin: var(--space-xl) auto;
+    padding: 0 var(--space-lg);
   }
   
   .card {
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(248, 249, 250, 1) 100%);
     color: var(--blue-dark);
     padding: 35px;
     margin: 25px 0;
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0, 47, 108, 0.15);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
     border-left: 6px solid var(--blue-light);
     transition: all 0.3s ease;
     position: relative;
@@ -190,7 +216,7 @@
   }
   
   .card:hover {
-    box-shadow: 0 12px 32px rgba(0, 47, 108, 0.25);
+    box-shadow: var(--shadow-strong);
     border-left-color: var(--blue-dark);
   }
   
@@ -201,9 +227,15 @@
   .card h2 {
     color: var(--blue-dark);
     margin-top: 0;
-    font-size: 1.8em;
+    font-size: var(--font-size-card-title);
     position: relative;
     z-index: 1;
+  }
+
+  .muted-text {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 0.95rem;
+    margin-bottom: var(--space-md);
   }
   
   .card ul {
@@ -221,12 +253,12 @@
     background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-hover) 100%);
     color: var(--white);
     padding: 16px 32px;
-    border-radius: 10px;
+    border-radius: var(--radius-md);
     font-weight: 600;
     font-size: 16px;
     text-decoration: none;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 47, 108, 0.3);
+    box-shadow: var(--shadow-soft);
     position: relative;
     overflow: hidden;
   }
@@ -262,7 +294,7 @@
   
   textarea {
     border: 2px solid var(--blue-light);
-    border-radius: 10px;
+    border-radius: var(--radius-md);
     padding: 15px;
     font-size: 16px;
     resize: vertical;
@@ -280,7 +312,6 @@
     transform: translateY(-2px);
   }
 
-  /* Skjemaer: innlogging og registrering */
   form {
     display: flex;
     flex-direction: column;
@@ -297,7 +328,7 @@
   input[type="password"],
   input[type="tel"] {
     border: 2px solid var(--blue-light);
-    border-radius: 10px;
+    border-radius: var(--radius-md);
     padding: 12px 14px;
     font-size: 16px;
     font-family: inherit;
@@ -331,7 +362,6 @@
     opacity: 0.9;
   }
   
-  /* Responsive design */
   @media (max-width: 768px) {
     .header-content {
       flex-direction: column;
