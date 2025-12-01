@@ -247,6 +247,36 @@
     margin: 10px 0;
     padding-left: 5px;
   }
+
+  .song-list {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--space-lg);
+  }
+
+  .song-list li {
+    background: rgba(255, 255, 255, 0.7);
+    padding: var(--space-lg);
+    margin: var(--space-md) 0;
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--blue-light);
+    transition: all 0.3s ease;
+    line-height: 1.8;
+  }
+
+  .song-list li:hover {
+    background: rgba(255, 255, 255, 0.9);
+    border-left-color: var(--blue-dark);
+    transform: translateX(5px);
+    box-shadow: 0 2px 8px rgba(0, 47, 108, 0.1);
+  }
+
+  .song-list li strong {
+    color: var(--blue-dark);
+    font-size: 1.1em;
+    display: block;
+    margin-bottom: var(--space-sm);
+  }
   
   .btn {
     display: inline-block;
