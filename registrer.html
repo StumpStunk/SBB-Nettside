@@ -55,4 +55,31 @@
     <p>© 2025 SBB – Stabæk Bandy Support</p>
     </footer>
     </body>
+<script>
+    async function registerUser() {
+      const email = document.getElementById("email").value;
+      const pass = document.getElementById("password").value;
+      const name = document.getElementById("name").value;
+    
+      // Opprett bruker hos Supabase Auth
+      const { data, error } = await supabase.auth.signUp({
+        email: email,
+        password: pass
+      });
+    
+      if (error) {
+        alert(error.message);
+        return;
+      }
+    
+      // Legg bruker i members-tabellen
+      await supabase.from("members").insert({
+        auth_id: data.user.id,
+        full_name: name,
+        bandy_fan_type: "SBB supporter"
+      });
+    
+      alert("Bruker registrert!");
+    }
+</script>   
 </html>

@@ -42,4 +42,23 @@
 </footer>
 
 </body>
+<script>
+  async function loginUser() {
+    const email = document.getElementById("email").value;
+    const pass = document.getElementById("password").value;
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: pass
+    });
+
+    if (error) {
+      alert("Feil e-post eller passord!");
+      return;
+    }
+
+    alert("Innlogging vellykket!");
+    window.location.href = "dashboard.html";
+  }
+</script>
 </html>
