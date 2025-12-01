@@ -31,7 +31,27 @@
         <div id="profile-info">
             <p>Laster profil...</p>
         </div>
-        <button id="logout-btn" class="btn" style="margin-top: var(--space-lg);">Logg ut</button>
+        </div>
+
+        <div class="card">
+            <h2>Endre passord</h2>
+            <form id="change-password-form">
+                <label for="current-password">Nåværende passord:</label>
+                <input type="password" id="current-password" name="current-password" required>
+
+                <label for="new-password">Nytt passord:</label>
+                <input type="password" id="new-password" name="new-password" required minlength="6">
+
+                <label for="confirm-password">Bekreft nytt passord:</label>
+                <input type="password" id="confirm-password" name="confirm-password" required minlength="6">
+
+                <button type="submit" class="btn">Endre passord</button>
+            </form>
+            <div id="password-message" style="margin-top: var(--space-md);"></div>
+        </div>
+
+        <div class="card">
+            <button id="logout-btn" class="btn">Logg ut</button>
         </div>
     </div>
 
@@ -94,12 +114,58 @@
         }
         }
 
+        // Endre passord funksjon
+        async function changePassword(event) {
+            event.preventDefault();
+            
+            const currentPassword = document.getElementById("current-password").value;
+            const newPassword = document.getElementById("new-password").value;
+            const confirmPassword = document.getElementById("confirm-password").value;
+            const messageDiv = document.getElementById("password-message");
+
+            // Validering
+            if (newPassword !== confirmPassword) {
+                messageDiv.innerHTML = '<p style="color: red;">Nye passordene matcher ikke!</p>';
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                messageDiv.innerHTML = '<p style="color: red;">Nytt passord må være minst 6 tegn!</p>';
+                return;
+            }
+
+            // Verifiser nåværende passord først
+            const { data: { user } } = await supa.auth.getUser();
+            const { error: verifyError } = await supa.auth.signInWithPassword({
+                email: user.email,
+                password: currentPassword
+            });
+
+            if (verifyError) {
+                messageDiv.innerHTML = '<p style="color: red;">Nåværende passord er feil!</p>';
+                return;
+            }
+
+            // Oppdater passord
+            const { error: updateError } = await supa.auth.updateUser({
+                password: newPassword
+            });
+
+            if (updateError) {
+                messageDiv.innerHTML = '<p style="color: red;">Feil ved endring av passord: ' + updateError.message + '</p>';
+            } else {
+                messageDiv.innerHTML = '<p style="color: green;">Passord endret vellykket!</p>';
+                document.getElementById("change-password-form").reset();
+            }
+        }
+
         // Event listeners
         document.getElementById("logout-btn").addEventListener("click", logout);
         document.getElementById("logout-link")?.addEventListener("click", (e) => {
         e.preventDefault();
         logout();
         });
+        document.getElementById("change-password-form").addEventListener("submit", changePassword);
 
         // Sjekk auth når siden lastes
         checkAuth();

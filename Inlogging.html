@@ -35,7 +35,25 @@
 
             <button type="submit" class="btn">Logg inn</button>
         </form>
+        <p style="margin-top: var(--space-md);">
+            <a href="#" id="forgot-password-link" style="color: var(--blue-dark); text-decoration: underline;">Glemt passord?</a>
+        </p>
         <p>Har du ikke konto? <a href="registrer.html">Registrer deg her</a>.</p>
+    </div>
+
+    <div class="card" id="forgot-password-card" style="display: none;">
+        <h2>Tilbakestill passord</h2>
+        <p class="muted-text">Skriv inn e-postadressen din, så sender vi deg en lenke for å tilbakestille passordet.</p>
+        <form id="forgot-password-form">
+            <label for="reset-email">E‑post:</label>
+            <input type="email" id="reset-email" name="reset-email" required>
+
+            <button type="submit" class="btn">Send tilbakestillingslenke</button>
+        </form>
+        <div id="reset-message" style="margin-top: var(--space-md);"></div>
+        <p style="margin-top: var(--space-md);">
+            <a href="#" id="back-to-login-link" style="color: var(--blue-dark); text-decoration: underline;">Tilbake til innlogging</a>
+        </p>
     </div>
 </div>
 
@@ -70,6 +88,41 @@
     alert("Innlogging vellykket!");
     window.location.href = "profil.html";
   }
+
+  // Glemt passord funksjon
+  async function resetPassword(event) {
+    event.preventDefault();
+    
+    const email = document.getElementById("reset-email").value;
+    const messageDiv = document.getElementById("reset-message");
+
+    const { error } = await supa.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/Inlogging.html'
+    });
+
+    if (error) {
+      messageDiv.innerHTML = '<p style="color: red;">Feil: ' + error.message + '</p>';
+    } else {
+      messageDiv.innerHTML = '<p style="color: green;">E-post med tilbakestillingslenke er sendt til ' + email + '</p>';
+    }
+  }
+
+  // Vis/skjul glemt passord skjema
+  document.getElementById("forgot-password-link")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    document.querySelector(".card:first-of-type").style.display = "none";
+    document.getElementById("forgot-password-card").style.display = "block";
+  });
+
+  document.getElementById("back-to-login-link")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    document.querySelector(".card:first-of-type").style.display = "block";
+    document.getElementById("forgot-password-card").style.display = "none";
+    document.getElementById("reset-message").innerHTML = "";
+    document.getElementById("forgot-password-form").reset();
+  });
+
+  document.getElementById("forgot-password-form")?.addEventListener("submit", resetPassword);
 
   // Oppdater navigasjon basert på innloggingsstatus
   async function updateNavigation() {
