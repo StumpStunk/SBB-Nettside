@@ -97,7 +97,7 @@
     const messageDiv = document.getElementById("reset-message");
 
     const { error } = await supa.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + '/Inlogging.html'
+      redirectTo: window.location.origin + '/reset-password.html'
     });
 
     if (error) {
