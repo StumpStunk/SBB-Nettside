@@ -37,6 +37,9 @@
     <p class="muted-text">Her er en samling av tribunelåter. Du kan kopiere tekstene og dele med andre supportere.</p>
     <ul class="song-list">
       <li>
+        <button type="button" class="copy-song-btn" title="Kopier sang">
+          <img src="images/copy.png" alt="Kopier">
+        </button>
         <strong>VI ER STABÆK BANDY I FRA BÆRUM</strong><br>
         Vi er Stabæk Bandy i fra Bærum<br>
         Plassen kunstis er vårt hjem<br>
@@ -45,6 +48,9 @@
         oååååå med sakte klapping
       </li>
       <li>
+        <button type="button" class="copy-song-btn" title="Kopier sang">
+          <img src="images/copy.png" alt="Kopier">
+        </button>
         <strong>Forza Stabæk inn med ballen</strong><br>
         Forza Stabæk<br>
         Inn med ballen <br>
@@ -54,6 +60,9 @@
         Åoååoååoååå<br>
       </li>
       <li>
+        <button type="button" class="copy-song-btn" title="Kopier sang">
+          <img src="images/copy.png" alt="Kopier">
+        </button>
         <strong> BLØ FOR DRAKTA</strong><br>
         Blø for drakta, Stabækgutta<br>
         Hey hey<br>
@@ -61,6 +70,9 @@
         Hey hey<br>
       </li>
       <li>
+        <button type="button" class="copy-song-btn" title="Kopier sang">
+          <img src="images/copy.png" alt="Kopier">
+        </button>
         <strong>VI VIL HA EN BLAA SESONG</strong><br>
         Vi vil ha en blaa sesong<br>
         Rå og hard og uten dong<br>
@@ -68,6 +80,9 @@
         Den skal være blaa<br>
       </li>
       <li>
+        <button type="button" class="copy-song-btn" title="Kopier sang">
+          <img src="images/copy.png" alt="Kopier">
+        </button>
         <strong> ENKLE OG KORTE ROP:</strong><br>
         Forsanger: beste laget<br>
         Alle svarer: Stabæk<br>
@@ -157,6 +172,20 @@
       updateNavigation();
     });
   }
+
+  // Kopier sang-tekst til utklippstavlen
+  document.querySelectorAll('.copy-song-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const li = btn.closest('li');
+      if (!li) return;
+      const clone = li.cloneNode(true);
+      // Fjern knappen fra kopien
+      const btnInClone = clone.querySelector('.copy-song-btn');
+      if (btnInClone) btnInClone.remove();
+      const text = clone.innerText.trim();
+      navigator.clipboard?.writeText(text).catch(() => {});
+    });
+  });
 </script>
 <footer>
   <p>SBS – Stabæk Bandy Support</p>

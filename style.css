@@ -487,13 +487,43 @@
     border: none;
     background: transparent;
     cursor: pointer;
-    font-size: 14px;
-    color: var(--blue-dark);
-    opacity: 0.8;
-    padding: 4px;
+    padding: 0;
+    line-height: 0;
   }
 
   .password-toggle:hover {
+    opacity: 0.9;
+  }
+
+  .password-toggle img {
+    width: 20px;
+    height: 20px;
+    display: block;
+  }
+
+  /* Kopier-knapp for sanger */
+  .song-list li {
+    position: relative;
+  }
+
+  .copy-song-btn {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .copy-song-btn img {
+    width: 18px;
+    height: 18px;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+  }
+
+  .copy-song-btn:hover img {
     opacity: 1;
   }
   

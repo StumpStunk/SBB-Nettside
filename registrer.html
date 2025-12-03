@@ -49,13 +49,17 @@
     <label for="password">Passord</label>
     <div class="password-field">
       <input id="password" type="password" placeholder="••••••••" required>
-      <button type="button" class="password-toggle" data-target="password">👁</button>
+      <button type="button" class="password-toggle" data-target="password">
+        <img src="images/eye-open.png" alt="Vis passord">
+      </button>
     </div>
 
     <label for="password_confirm">Bekreft passord</label>
     <div class="password-field">
       <input id="password_confirm" type="password" placeholder="••••••••" required>
-      <button type="button" class="password-toggle" data-target="password_confirm">👁</button>
+      <button type="button" class="password-toggle" data-target="password_confirm">
+        <img src="images/eye-open.png" alt="Vis passord">
+      </button>
     </div>
 
 
@@ -141,7 +145,11 @@
         btn.addEventListener('click', () => {
           const isPassword = input.type === 'password';
           input.type = isPassword ? 'text' : 'password';
-          btn.textContent = isPassword ? '🙈' : '👁';
+          const img = btn.querySelector('img');
+          if (img) {
+            img.src = isPassword ? 'images/eye-close.png' : 'images/eye-open.png';
+            img.alt = isPassword ? 'Skjul passord' : 'Vis passord';
+          }
         });
       });
     }

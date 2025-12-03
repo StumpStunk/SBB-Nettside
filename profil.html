@@ -46,19 +46,25 @@
                 <label for="current-password">Nåværende passord:</label>
                 <div class="password-field">
                     <input type="password" id="current-password" name="current-password" required>
-                    <button type="button" class="password-toggle" data-target="current-password">👁</button>
+                    <button type="button" class="password-toggle" data-target="current-password">
+                        <img src="images/eye-open.png" alt="Vis passord">
+                    </button>
                 </div>
 
                 <label for="new-password">Nytt passord:</label>
                 <div class="password-field">
                     <input type="password" id="new-password" name="new-password" required minlength="6">
-                    <button type="button" class="password-toggle" data-target="new-password">👁</button>
+                    <button type="button" class="password-toggle" data-target="new-password">
+                        <img src="images/eye-open.png" alt="Vis passord">
+                    </button>
                 </div>
 
                 <label for="confirm-password">Bekreft nytt passord:</label>
                 <div class="password-field">
                     <input type="password" id="confirm-password" name="confirm-password" required minlength="6">
-                    <button type="button" class="password-toggle" data-target="confirm-password">👁</button>
+                    <button type="button" class="password-toggle" data-target="confirm-password">
+                        <img src="images/eye-open.png" alt="Vis passord">
+                    </button>
                 </div>
 
                 <button type="submit" class="btn">Endre passord</button>
@@ -218,7 +224,11 @@
             btn.addEventListener('click', () => {
                 const isPassword = input.type === 'password';
                 input.type = isPassword ? 'text' : 'password';
-                btn.textContent = isPassword ? '🙈' : '👁';
+                const img = btn.querySelector('img');
+                if (img) {
+                    img.src = isPassword ? 'images/eye-close.png' : 'images/eye-open.png';
+                    img.alt = isPassword ? 'Skjul passord' : 'Vis passord';
+                }
             });
             });
         }
