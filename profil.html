@@ -76,12 +76,28 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const supa = supabase.createClient(
-        "https://mqkoeaswvafrhyyotpqh.supabase.co",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xa29lYXN3dmFmcmh5eW90cHFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1ODMzMDAsImV4cCI6MjA4MDE1OTMwMH0.wQAcQFlUp77_46ycqfB--ywEN7uL5hRK0TdAy2PWkQs"
+        // Robust Supabase-init så meny og profil ikke knekker om CDN feiler
+        let supa = null;
+        if (window.supabase) {
+        const { createClient } = supabase;
+        supa = createClient(
+            "https://mqkoeaswvafrhyyotpqh.supabase.co",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xa29lYXN3dmFmcmh5eW90cHFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1ODMzMDAsImV4cCI6MjA4MDE1OTMwMH0.wQAcQFlUp77_46ycqfB--ywEN7uL5hRK0TdAy2PWkQs"
         );
+        } else {
+        console.error("Supabase-biblioteket ble ikke lastet.");
+        }
 
         async function checkAuth() {
+        if (!supa) {
+            // Har ingen auth uten Supabase – vis kun enkel tekst
+            const profileInfo = document.getElementById("profile-info");
+            if (profileInfo) {
+            profileInfo.innerHTML = "<p>Kunne ikke laste innlogging (Supabase mangler).</p>";
+            }
+            return;
+        }
+
         const { data: { session } } = await supa.auth.getSession();
         
         if (!session) {
@@ -120,6 +136,11 @@
 
         // Logg ut funksjon
         async function logout() {
+        if (!supa) {
+            window.location.href = "index.html";
+            return;
+        }
+
         const { error } = await supa.auth.signOut();
         if (error) {
             alert("Feil ved utlogging: " + error.message);
@@ -132,6 +153,11 @@
         async function changePassword(event) {
             event.preventDefault();
             
+            if (!supa) {
+                messageDiv.innerHTML = '<p style="color: red;">Kan ikke endre passord – Supabase er ikke tilgjengelig.</p>';
+                return;
+            }
+
             const currentPassword = document.getElementById("current-password").value;
             const newPassword = document.getElementById("new-password").value;
             const confirmPassword = document.getElementById("confirm-password").value;

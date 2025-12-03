@@ -83,10 +83,17 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  const supa = supabase.createClient(
-    "https://mqkoeaswvafrhyyotpqh.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xa29lYXN3dmFmcmh5eW90cHFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1ODMzMDAsImV4cCI6MjA4MDE1OTMwMH0.wQAcQFlUp77_46ycqfB--ywEN7uL5hRK0TdAy2PWkQs"
-  );
+  // Robust Supabase-init så menyen ikke knekker om CDN feiler
+  let supa = null;
+  if (window.supabase) {
+    const { createClient } = supabase;
+    supa = createClient(
+      "https://mqkoeaswvafrhyyotpqh.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xa29lYXN3dmFmcmh5eW90cHFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1ODMzMDAsImV4cCI6MjA4MDE1OTMwMH0.wQAcQFlUp77_46ycqfB--ywEN7uL5hRK0TdAy2PWkQs"
+    );
+  } else {
+    console.error("Supabase-biblioteket ble ikke lastet.");
+  }
 
   // Dropdown funksjonalitet
   function initDropdown() {
@@ -110,10 +117,18 @@
 
   // Oppdater navigasjon basert på innloggingsstatus
   async function updateNavigation() {
-    const { data: { session } } = await supa.auth.getSession();
     const authLinks = document.querySelectorAll('.auth-link');
     const profileLinks = document.querySelectorAll('.profile-link');
     const logoutLink = document.getElementById('logout-link');
+
+    if (!supa) {
+      authLinks.forEach(link => link.style.display = 'block');
+      profileLinks.forEach(link => link.style.display = 'none');
+      initDropdown();
+      return;
+    }
+
+    const { data: { session } } = await supa.auth.getSession();
 
     if (session) {
       authLinks.forEach(link => link.style.display = 'none');
@@ -137,9 +152,11 @@
   }
 
   updateNavigation();
-  supa.auth.onAuthStateChange(() => {
-    updateNavigation();
-  });
+  if (supa) {
+    supa.auth.onAuthStateChange(() => {
+      updateNavigation();
+    });
+  }
 </script>
 <footer>
   <p>SBS – Stabæk Bandy Support</p>
