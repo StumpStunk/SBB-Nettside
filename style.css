@@ -466,6 +466,36 @@
     box-shadow: 0 0 0 3px rgba(77, 163, 255, 0.2);
     transform: translateY(-1px);
   }
+
+  /* Passord-felt med vis/skjul-knapp */
+  .password-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .password-field input[type="password"],
+  .password-field input[type="text"] {
+    padding-right: 44px;
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--blue-dark);
+    opacity: 0.8;
+    padding: 4px;
+  }
+
+  .password-toggle:hover {
+    opacity: 1;
+  }
   
   footer {
     background: linear-gradient(135deg, var(--blue-dark) 0%, #001a3d 100%);
