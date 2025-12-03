@@ -101,9 +101,12 @@
     
     const email = document.getElementById("reset-email").value;
     const messageDiv = document.getElementById("reset-message");
+    
+    // Bruk GitHub Pages‑URL som redirect etter klikk på e‑postlenken
+    const resetUrl = 'https://stumpstunk.github.io/SBB-Nettside/reset-password.html';
 
     const { error } = await supa.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + '/reset-password.html'
+      redirectTo: resetUrl
     });
 
     if (error) {
