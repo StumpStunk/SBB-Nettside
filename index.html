@@ -16,8 +16,15 @@
       <a href="betaling.html" class="nav-link">Betaling</a>
       <a href="Inlogging.html" class="nav-link auth-link">Logg inn</a>
       <a href="registrer.html" class="nav-link auth-link">Registrer</a>
-      <a href="profil.html" class="nav-link profile-link" style="display: none;">Min profil</a>
-      <a href="#" id="logout-link" class="nav-link profile-link" style="display: none;">Logg ut</a>
+      <div class="dropdown profile-link" id="settings-dropdown" style="display: none;">
+        <a href="#" class="nav-link dropdown-toggle" id="settings-toggle">Innstillinger</a>
+        <div class="dropdown-menu">
+          <a href="profil.html" class="dropdown-item">Min profil</a>
+          <a href="profil.html#change-password" class="dropdown-item">Endre passord</a>
+          <a href="mailto:kontakt@sbs.no" class="dropdown-item">Kontakt oss</a>
+          <a href="#" id="logout-link" class="dropdown-item danger">Logg ut</a>
+        </div>
+      </div>
     </nav>
   </div>
 </header>
@@ -49,6 +56,14 @@
 <footer>
 <p>SBS – Stabæk Bandy Support</p>
 <p>Stolt supporter av Stabæk Bandy</p>
+<div class="footer-links">
+  <a href="mailto:kontakt@sbs.no">
+    <span>📧</span> Kontakt oss
+  </a>
+  <a href="https://www.instagram.com/stabaekbandy" target="_blank" rel="noopener noreferrer">
+    <span>📷</span> Instagram
+  </a>
+</div>
 </footer>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -58,7 +73,26 @@
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xa29lYXN3dmFmcmh5eW90cHFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1ODMzMDAsImV4cCI6MjA4MDE1OTMwMH0.wQAcQFlUp77_46ycqfB--ywEN7uL5hRK0TdAy2PWkQs"
   );
 
-  // Oppdater navigasjon basert på innloggingsstatus
+  // Dropdown funksjonalitet
+  function initDropdown() {
+    const dropdown = document.getElementById('settings-dropdown');
+    const toggle = document.getElementById('settings-toggle');
+    
+    if (toggle) {
+      toggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        dropdown?.classList.toggle('active');
+      });
+    }
+
+    // Lukk dropdown når man klikker utenfor
+    document.addEventListener('click', (e) => {
+      if (dropdown && !dropdown.contains(e.target)) {
+        dropdown.classList.remove('active');
+      }
+    });
+  }
+
   async function updateNavigation() {
     const { data: { session } } = await supa.auth.getSession();
     const authLinks = document.querySelectorAll('.auth-link');
@@ -66,16 +100,13 @@
     const logoutLink = document.getElementById('logout-link');
 
     if (session) {
-      // Bruker er innlogget - skjul "Logg inn" og "Registrer", vis "Min profil" og "Logg ut"
       authLinks.forEach(link => link.style.display = 'none');
       profileLinks.forEach(link => link.style.display = 'block');
     } else {
-      // Bruker er ikke innlogget - vis "Logg inn" og "Registrer", skjul "Min profil" og "Logg ut"
       authLinks.forEach(link => link.style.display = 'block');
       profileLinks.forEach(link => link.style.display = 'none');
     }
 
-    // Legg til logout-funksjonalitet
     if (logoutLink) {
       logoutLink.addEventListener('click', async (e) => {
         e.preventDefault();
@@ -85,12 +116,13 @@
         }
       });
     }
+
+    initDropdown();
   }
 
-  // Kjør når siden lastes
+
   updateNavigation();
 
-  // Lytte på auth-endringer
   supa.auth.onAuthStateChange(() => {
     updateNavigation();
   });

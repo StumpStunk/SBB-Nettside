@@ -14,8 +14,15 @@
         <a href="index.html" class="nav-link">Hjem</a>
         <a href="sanger.html" class="nav-link">Sanger</a>
         <a href="betaling.html" class="nav-link">Betaling</a>
-        <a href="profil.html" class="nav-link active">Min profil</a>
-        <a href="#" id="logout-link" class="nav-link">Logg ut</a>
+        <div class="dropdown" id="settings-dropdown">
+            <a href="#" class="nav-link dropdown-toggle" id="settings-toggle">Innstillinger</a>
+            <div class="dropdown-menu">
+                <a href="profil.html" class="dropdown-item">Min profil</a>
+                <a href="profil.html#change-password" class="dropdown-item">Endre passord</a>
+                <a href="mailto:kontakt@sbs.no" class="dropdown-item">Kontakt oss</a>
+                <a href="#" id="logout-link" class="dropdown-item danger">Logg ut</a>
+            </div>
+        </div>
     </nav>
         </div>
     </header>
@@ -25,7 +32,7 @@
         <p>Velkommen tilbake!</p>
     </section>
 
-    <div class="container">
+    <div class="container container-wide">
         <div class="card" id="profile-card">
         <h2>Profilinformasjon</h2>
         <div id="profile-info">
@@ -33,7 +40,7 @@
         </div>
         </div>
 
-        <div class="card">
+        <div class="card" id="change-password">
             <h2>Endre passord</h2>
             <form id="change-password-form">
                 <label for="current-password">Nåværende passord:</label>
@@ -57,6 +64,14 @@
 
     <footer>
         <p>SBS – Stabæk Bandy Support</p>
+        <div class="footer-links">
+          <a href="mailto:kontakt@sbs.no">
+            <span>📧</span> Kontakt oss
+          </a>
+          <a href="https://www.instagram.com/stabaekbandy" target="_blank" rel="noopener noreferrer">
+            <span>📷</span> Instagram
+          </a>
+        </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -66,7 +81,6 @@
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xa29lYXN3dmFmcmh5eW90cHFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1ODMzMDAsImV4cCI6MjA4MDE1OTMwMH0.wQAcQFlUp77_46ycqfB--ywEN7uL5hRK0TdAy2PWkQs"
         );
 
-        // Sjekk innloggingsstatus
         async function checkAuth() {
         const { data: { session } } = await supa.auth.getSession();
         
@@ -159,6 +173,26 @@
             }
         }
 
+        // Dropdown funksjonalitet
+        function initDropdown() {
+            const dropdown = document.getElementById('settings-dropdown');
+            const toggle = document.getElementById('settings-toggle');
+            
+            if (toggle) {
+                toggle.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    dropdown?.classList.toggle('active');
+                });
+            }
+
+            // Lukk dropdown når man klikker utenfor
+            document.addEventListener('click', (e) => {
+                if (dropdown && !dropdown.contains(e.target)) {
+                    dropdown.classList.remove('active');
+                }
+            });
+        }
+
         // Event listeners
         document.getElementById("logout-btn").addEventListener("click", logout);
         document.getElementById("logout-link")?.addEventListener("click", (e) => {
@@ -167,8 +201,21 @@
         });
         document.getElementById("change-password-form").addEventListener("submit", changePassword);
 
+        // Håndter hash-link for "Endre passord"
+        if (window.location.hash === '#change-password') {
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    const element = document.getElementById('change-password');
+                    if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 100);
+            });
+        }
+
         // Sjekk auth når siden lastes
         checkAuth();
+        initDropdown();
     </script>
     </body>
 </html>

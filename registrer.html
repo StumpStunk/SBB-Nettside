@@ -16,8 +16,15 @@
           <a href="betaling.html" class="nav-link">Betaling</a>
           <a href="Inlogging.html" class="nav-link auth-link">Logg inn</a>
           <a href="registrer.html" class="nav-link active auth-link">Registrer</a>
-          <a href="profil.html" class="nav-link profile-link" style="display: none;">Min profil</a>
-          <a href="#" id="logout-link" class="nav-link profile-link" style="display: none;">Logg ut</a>
+          <div class="dropdown profile-link" id="settings-dropdown" style="display: none;">
+            <a href="#" class="nav-link dropdown-toggle" id="settings-toggle">Innstillinger</a>
+            <div class="dropdown-menu">
+              <a href="profil.html" class="dropdown-item">Min profil</a>
+              <a href="profil.html#change-password" class="dropdown-item">Endre passord</a>
+              <a href="mailto:kontakt@sbs.no" class="dropdown-item">Kontakt oss</a>
+              <a href="#" id="logout-link" class="dropdown-item danger">Logg ut</a>
+            </div>
+          </div>
         </nav>
       </div>
     </header>
@@ -53,6 +60,14 @@
 
     <footer>
     <p>© 2025 SBS – Stabæk Bandy Support</p>
+    <div class="footer-links">
+      <a href="mailto:kontakt@sbs.no">
+        <span>📧</span> Kontakt oss
+      </a>
+      <a href="https://www.instagram.com/stabaekbandy" target="_blank" rel="noopener noreferrer">
+        <span>📷</span> Instagram
+      </a>
+    </div>
     </footer>
     </body>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -110,6 +125,26 @@
       window.location.href = "Inlogging.html";
     }
 
+    // Dropdown funksjonalitet
+    function initDropdown() {
+      const dropdown = document.getElementById('settings-dropdown');
+      const toggle = document.getElementById('settings-toggle');
+      
+      if (toggle) {
+        toggle.addEventListener('click', (e) => {
+          e.preventDefault();
+          dropdown?.classList.toggle('active');
+        });
+      }
+
+      // Lukk dropdown når man klikker utenfor
+      document.addEventListener('click', (e) => {
+        if (dropdown && !dropdown.contains(e.target)) {
+          dropdown.classList.remove('active');
+        }
+      });
+    }
+
     // Oppdater navigasjon basert på innloggingsstatus
     async function updateNavigation() {
       const { data: { session } } = await supa.auth.getSession();
@@ -134,6 +169,8 @@
           }
         });
       }
+
+      initDropdown();
     }
 
     updateNavigation();
