@@ -88,52 +88,47 @@
     );
 
     async function registerUser(event) {
-      event.preventDefault();
+  event.preventDefault();
 
-      const email = document.getElementById("email").value;
-      const pass = document.getElementById("password").value;
-      const name = document.getElementById("name").value;
-      const phone = document.getElementById("phone").value;
-      const passwordConfirm = document.getElementById("password_confirm").value;
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("password").value;
+  const name = document.getElementById("name").value;
+  const phone = document.getElementById("phone").value;
+  const passwordConfirm = document.getElementById("password_confirm").value;
 
-      // Valider at passordene matcher
-      if (pass !== passwordConfirm) {
-        alert("Passordene matcher ikke!");
-        return;
-      }
+  // Valider at passordene matcher
+  if (pass !== passwordConfirm) {
+    alert("Passordene matcher ikke!");
+    return;
+  }
 
-      // Opprett bruker hos Supabase Auth
-      const { data, error } = await supa.auth.signUp({
-        email: email,
-        password: pass,
-        options: {
-          data: {
-            full_name: name,
-            phone: phone
-          }
-        }
-      });
-    
-      if (error) {
-        alert(error.message);
-        return;
-      }
-    
-      const { error: insertError } = await supa.from("members").insert({
-        auth_id: data.user.id,
+  // 1. Opprett bruker hos Supabase Auth
+  // MERK: Databasen din vil automatisk opprette en rad i 'members' via triggeren.
+  const { data, error } = await supa.auth.signUp({
+    email: email,
+    password: pass,
+    options: {
+      data: {
         full_name: name,
-        phone: phone,
-        bandy_fan_type: "SBS supporter"
-      });
-    
-      if (insertError) {
-        console.error("Feil ved lagring i members-tabellen:", insertError);
+        phone: phone
       }
-    
-      alert("Registrering vellykket! Sjekk e-posten din for å bekrefte kontoen din. En bekreftelseslink er sendt til " + email);
-      
-      window.location.href = "Inlogging.html";
     }
+  });
+
+  if (error) {
+    // Viser feilmeldingen fra Supabase Auth (f.eks. "Passordet er for kort" eller "E-posten er allerede i bruk")
+    alert(error.message); 
+    return;
+  }
+  
+  // 2. FJERN MANUELL INSERT: Vi stoler nå på Database Triggeren for å sette inn i 'members'.
+  // Triggeren kjører automatisk AFTER INSERT på auth.users.
+
+  alert("Registrering vellykket! Sjekk e-posten din for å bekrefte kontoen din. En bekreftelseslink er sendt til " + email);
+  
+  // Omdiriger brukeren til innlogging
+  window.location.href = "Inlogging.html";
+}
 
     // Vis/skjul passord-knapper
     function initPasswordToggles() {

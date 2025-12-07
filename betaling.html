@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="no">
 <head>
 <meta charset="UTF-8" />
@@ -8,7 +9,7 @@
 <body>
 <header>
   <div class="header-content">
-    <img src="logo-placeholder.png" alt="SBS Logo" />
+    <img src="logo-placeholder.png" alt="logo-placeholder.png" alt="SBS Logo" />
     <nav id="main-nav">
       <a href="index.html" class="nav-link">Hjem</a>
       <a href="sanger.html" class="nav-link">Sanger</a>
@@ -32,15 +33,50 @@
   <p>Fullfør medlemskapet ditt på en trygg og enkel måte.</p>
 </section>
 <div class="container">
-  <div class="card">
+  <div class="card" id="payment-card">
     <h2>Fullfør medlemsskap</h2>
-    <p class="muted-text">Betalingsløsningen blir koblet inn her. Inntil videre kan du kontakte oss på e‑post for å bekrefte innbetaling.</p>
-    <a href="mailto:post@sbs.no" class="btn">Kontakt SBS</a>
+    <div id="payment-info">
+      <p>Laster betalingsinformasjon...</p>
+    </div>
+    <div id="payment-form" style="display: none;">
+      <div style="background: rgba(77, 163, 255, 0.1); padding: var(--space-lg); border-radius: var(--radius-md); margin: var(--space-lg) 0;">
+        <h3 style="margin-top: 0;">Medlemskap: <span id="membership-price">199 kr</span></h3>
+        <p id="age-info" style="margin: 0; font-size: 0.9em;"></p>
+      </div>
+      
+      <h3>Velg betalingsmetode:</h3>
+      <div style="display: flex; gap: var(--space-md); flex-wrap: wrap; margin: var(--space-lg) 0;">
+        <button id="card-payment-btn" class="btn" style="flex: 1; min-width: 200px;">
+          💳 Betal med kort
+        </button>
+        <button id="vipps-payment-btn" class="btn" style="flex: 1; min-width: 200px; background: linear-gradient(135deg, #FF5C8A 0%, #FF3D6E 100%);">
+          📱 Betal med Vipps
+        </button>
+      </div>
+      
+      <div id="card-form" style="display: none; margin-top: var(--space-lg);">
+        <h4>Kortbetaling</h4>
+        <p class="muted-text">Kortbetaling vil bli implementert med Stripe eller lignende betalingsløsning.</p>
+        <div style="background: rgba(0, 0, 0, 0.05); padding: var(--space-lg); border-radius: var(--radius-md); margin-top: var(--space-md);">
+          <p><strong>Testmodus:</strong> Kortbetaling er ikke aktivert ennå. Kontakt oss for å fullføre betalingen.</p>
+          <a href="mailto:kontakt@sbs.no" class="btn" style="margin-top: var(--space-md);">Kontakt SBS</a>
+        </div>
+      </div>
+      
+      <div id="vipps-form" style="display: none; margin-top: var(--space-lg);">
+        <h4>Vipps-betaling</h4>
+        <p class="muted-text">Vipps-betaling vil bli implementert med Vipps API.</p>
+        <div style="background: rgba(0, 0, 0, 0.05); padding: var(--space-lg); border-radius: var(--radius-md); margin-top: var(--space-md);">
+          <p><strong>Testmodus:</strong> Vipps-betaling er ikke aktivert ennå. Kontakt oss for å fullføre betalingen.</p>
+          <a href="mailto:kontakt@sbs.no" class="btn" style="margin-top: var(--space-md);">Kontakt SBS</a>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  // Robust Supabase-init så menyen ikke knekker om CDN feiler
+  // Robust Supabase-init for å unngå feil ved lasting
   let supa = null;
   if (window.supabase) {
     const { createClient } = supabase;
@@ -64,7 +100,6 @@
       });
     }
 
-    // Lukk dropdown når man klikker utenfor
     document.addEventListener('click', (e) => {
       if (dropdown && !dropdown.contains(e.target)) {
         dropdown.classList.remove('active');
@@ -108,10 +143,94 @@
     initDropdown();
   }
 
+  // Hovedfunksjon for å laste betalingsinformasjon og håndtere feil/manglende rader
+  async function loadPaymentInfo() {
+    if (!supa) {
+      document.getElementById('payment-info').innerHTML = '<p style="color: red;">Kunne ikke laste betalingsinformasjon (Supabase init feilet).</p>';
+      return;
+    }
+
+    const { data: { session } } = await supa.auth.getSession();
+    
+    if (!session) {
+      document.getElementById('payment-info').innerHTML = '<p>Du må være innlogget for å betale. <a href="Inlogging.html">Logg inn her</a>.</p>';
+      return;
+    }
+    console.log("Innlogget bruker UID:", session.user.id);
+    // Hent medlemsdata - Bruker .limit(1) og .maybeSingle() for å omgå 406-feil fra PostgREST
+    const { data: memberData, error } = await supa
+      .from("members")
+      .select("*")
+      .eq("auth_id", session.user.id)
+      .limit(1) // Sikrer at maksimalt én rad returneres fra databasen
+      .maybeSingle({ // Tolker 0 rader som null (uten feil) og én rad som data.
+          headers: { 
+              'Accept': 'application/json', // Tvinger JSON
+              'Prefer': 'return=representation' // Standard preferanse
+          }
+      });
+    
+    // 1. Håndter alvorlige feil (RLS-feil, network errors, men IKKE PGRST116)
+    // Med .maybeSingle() er PGRST116 (0 rader) nå håndtert automatisk, og gir null data.
+    if (error) {
+      console.error("FEIL VED HENTING AV MEDLEMSDATA:", error);
+      document.getElementById('payment-info').innerHTML = '<p style="color: red;">FEIL: Kunne ikke laste medlemsinformasjon. Sjekk konsollen for detaljer (sannsynligvis RLS-feil, dvs. 403).</p>';
+      return;
+    }
+    
+    // 2. Håndter manglende rad (memberData er null)
+    if (!memberData) {
+      document.getElementById('payment-info').innerHTML = `
+        <div style="background: rgba(255, 165, 0, 0.1); padding: var(--space-lg); border-radius: var(--radius-md);">
+          <h3 style="color: orange; margin-top: 0;">⚠️ Mangler medlemsdata</h3>
+          <p>Din konto er opprettet, men vi finner ingen medlemsinformasjon. Vennligst prøv å logge ut og inn igjen, eller kontakt oss for å fullføre registreringen.</p>
+          <a href="mailto:kontakt@sbs.no" class="btn" style="margin-top: var(--space-md);">Kontakt SBS</a>
+        </div>
+      `;
+      document.getElementById('payment-form').style.display = 'none';
+      return;
+    }
+    
+    // 3. Alt OK: Vis betalingsskjema/status
+    const price = memberData.membership_price || 199.00;
+    const membershipStatus = memberData.membership_status || 'pending';
+
+    document.getElementById('membership-price').textContent = price.toFixed(2) + ' kr';
+    document.getElementById('age-info').textContent = 'Ordinært medlemskap for SBS.';
+
+    if (membershipStatus === 'active' || membershipStatus === 'paid') {
+      document.getElementById('payment-info').innerHTML = `
+        <div style="background: rgba(0, 200, 0, 0.1); padding: var(--space-lg); border-radius: var(--radius-md);">
+          <h3 style="color: green; margin-top: 0;">✅ Medlemskap aktivt</h3>
+          <p>Ditt medlemskap er allerede betalt og aktivt. Takk for at du støtter SBS!</p>
+        </div>
+      `;
+      document.getElementById('payment-form').style.display = 'none';
+    } else {
+      document.getElementById('payment-info').style.display = 'none';
+      document.getElementById('payment-form').style.display = 'block';
+    }
+  }
+
+  // Betalingsmetode-knapper
+  document.getElementById('card-payment-btn')?.addEventListener('click', () => {
+    document.getElementById('card-form').style.display = 'block';
+    document.getElementById('vipps-form').style.display = 'none';
+  });
+
+  document.getElementById('vipps-payment-btn')?.addEventListener('click', () => {
+    document.getElementById('vipps-form').style.display = 'block';
+    document.getElementById('card-form').style.display = 'none';
+  });
+
+  // Oppstart
   updateNavigation();
   if (supa) {
+    loadPaymentInfo();
+    // Re-load når autentiseringsstatus endres (f.eks. ved utlogging/innlogging)
     supa.auth.onAuthStateChange(() => {
       updateNavigation();
+      loadPaymentInfo();
     });
   }
 </script>

@@ -1,283 +1,293 @@
-<!DOCTYPE html>
-<html lang="no">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Min profil – SBS</title>
-    <link rel="stylesheet" href="style.css?v=2">
-    </head>
-    <body>
-    <header>
+<!DOCTYPE html> 
+<html lang="no"> 
+<head> 
+    <meta charset="UTF-8" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+    <title>Min profil – SBS</title> 
+    <link rel="stylesheet" href="style.css?v=2"> 
+</head> 
+<body> 
+    <header> 
         <div class="header-content">
-        <img src="logo-placeholder.png" alt="SBS Logo" />
-    <nav id="main-nav">
-        <a href="index.html" class="nav-link">Hjem</a>
-        <a href="sanger.html" class="nav-link">Sanger</a>
-        <a href="betaling.html" class="nav-link">Betaling</a>
-        <div class="dropdown" id="settings-dropdown">
-            <a href="#" class="nav-link dropdown-toggle" id="settings-toggle">Innstillinger</a>
-            <div class="dropdown-menu">
-                <a href="profil.html" class="dropdown-item">Min profil</a>
-                <a href="profil.html#change-password" class="dropdown-item">Endre passord</a>
-                <a href="mailto:kontakt@sbs.no" class="dropdown-item">Kontakt oss</a>
-                <a href="#" id="logout-link" class="dropdown-item danger">Logg ut</a>
-            </div>
-        </div>
-    </nav>
-        </div>
-    </header>
-
-    <section class="hero hero-small">
-        <h1>Min profil</h1>
-        <p>Velkommen tilbake!</p>
-    </section>
-
-    <div class="container container-wide">
-        <div class="card" id="profile-card">
-        <h2>Profilinformasjon</h2>
-        <div id="profile-info">
-            <p>Laster profil...</p>
-        </div>
-        </div>
-
-        <div class="card" id="change-password">
-            <h2>Endre passord</h2>
-            <form id="change-password-form">
-                <label for="current-password">Nåværende passord:</label>
-                <div class="password-field">
-                    <input type="password" id="current-password" name="current-password" required>
-                    <button type="button" class="password-toggle" data-target="current-password">
-                        <img src="images/eye-open.png" alt="Vis passord">
-                    </button>
-                </div>
-
-                <label for="new-password">Nytt passord:</label>
-                <div class="password-field">
-                    <input type="password" id="new-password" name="new-password" required minlength="6">
-                    <button type="button" class="password-toggle" data-target="new-password">
-                        <img src="images/eye-open.png" alt="Vis passord">
-                    </button>
-                </div>
-
-                <label for="confirm-password">Bekreft nytt passord:</label>
-                <div class="password-field">
-                    <input type="password" id="confirm-password" name="confirm-password" required minlength="6">
-                    <button type="button" class="password-toggle" data-target="confirm-password">
-                        <img src="images/eye-open.png" alt="Vis passord">
-                    </button>
-                </div>
-
-                <button type="submit" class="btn">Endre passord</button>
-            </form>
-            <div id="password-message" style="margin-top: var(--space-md);"></div>
-        </div>
-
-        <div class="card">
-            <button id="logout-btn" class="btn">Logg ut</button>
-        </div>
-    </div>
-
-    <footer>
-        <p>SBS – Stabæk Bandy Support</p>
-        <div class="footer-links">
-          <a href="mailto:kontakt@sbs.no">
-            <span>📧</span> Kontakt oss
-          </a>
-          <a href="https://www.instagram.com/stabaekbandy" target="_blank" rel="noopener noreferrer">
-            <span>📷</span> Instagram
-          </a>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        // Robust Supabase-init så meny og profil ikke knekker om CDN feiler
-        let supa = null;
-        if (window.supabase) {
-        const { createClient } = supabase;
-        supa = createClient(
-            "https://mqkoeaswvafrhyyotpqh.supabase.co",
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xa29lYXN3dmFmcmh5eW90cHFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1ODMzMDAsImV4cCI6MjA4MDE1OTMwMH0.wQAcQFlUp77_46ycqfB--ywEN7uL5hRK0TdAy2PWkQs"
-        );
-        } else {
-        console.error("Supabase-biblioteket ble ikke lastet.");
-        }
-
-        async function checkAuth() {
-        if (!supa) {
-            // Har ingen auth uten Supabase – vis kun enkel tekst
-            const profileInfo = document.getElementById("profile-info");
-            if (profileInfo) {
-            profileInfo.innerHTML = "<p>Kunne ikke laste innlogging (Supabase mangler).</p>";
-            }
-            return;
-        }
-
-        const { data: { session } } = await supa.auth.getSession();
-        
-        if (!session) {
-            window.location.href = "Inlogging.html";
-            return;
-        }
-
-        // Hent brukerdata fra members-tabellen
-        const { data: memberData, error } = await supa
-            .from("members")
-            .select("*")
-            .eq("auth_id", session.user.id)
-            .single();
-
-        const user = session.user;
-        const userMetadata = user.user_metadata || {};
-        
-        const profileInfo = document.getElementById("profile-info");
-        
-        if (error && error.code !== 'PGRST116') {
-            console.error("Feil ved henting av profil:", error);
-        }
-
-        const fullName = memberData?.full_name || userMetadata.full_name || user.email?.split('@')[0] || "Bruker";
-        const email = user.email || "Ikke oppgitt";
-        const phone = memberData?.phone || userMetadata.phone || "Ikke oppgitt";
-        const fanType = memberData?.bandy_fan_type || "SBS supporter";
-
-        profileInfo.innerHTML = `
-            <p><strong>Navn:</strong> ${fullName}</p>
-            <p><strong>E-post:</strong> ${email}</p>
-            <p><strong>Telefonnummer:</strong> ${phone}</p>
-            <p><strong>Type:</strong> ${fanType}</p>
-        `;
-        }
-
-        // Logg ut funksjon
-        async function logout() {
-        if (!supa) {
-            window.location.href = "index.html";
-            return;
-        }
-
-        const { error } = await supa.auth.signOut();
-        if (error) {
-            alert("Feil ved utlogging: " + error.message);
-        } else {
-            window.location.href = "index.html";
-        }
-        }
-
-        // Endre passord funksjon
-        async function changePassword(event) {
-            event.preventDefault();
-            
-            if (!supa) {
-                messageDiv.innerHTML = '<p style="color: red;">Kan ikke endre passord – Supabase er ikke tilgjengelig.</p>';
-                return;
-            }
-
-            const currentPassword = document.getElementById("current-password").value;
-            const newPassword = document.getElementById("new-password").value;
-            const confirmPassword = document.getElementById("confirm-password").value;
-            const messageDiv = document.getElementById("password-message");
-
-            // Validering
-            if (newPassword !== confirmPassword) {
-                messageDiv.innerHTML = '<p style="color: red;">Nye passordene matcher ikke!</p>';
-                return;
-            }
-
-            if (newPassword.length < 6) {
-                messageDiv.innerHTML = '<p style="color: red;">Nytt passord må være minst 6 tegn!</p>';
-                return;
-            }
-
-            // Verifiser nåværende passord først
-            const { data: { user } } = await supa.auth.getUser();
-            const { error: verifyError } = await supa.auth.signInWithPassword({
-                email: user.email,
-                password: currentPassword
-            });
-
-            if (verifyError) {
-                messageDiv.innerHTML = '<p style="color: red;">Nåværende passord er feil!</p>';
-                return;
-            }
-
-            // Oppdater passord
-            const { error: updateError } = await supa.auth.updateUser({
-                password: newPassword
-            });
-
-            if (updateError) {
-                messageDiv.innerHTML = '<p style="color: red;">Feil ved endring av passord: ' + updateError.message + '</p>';
-            } else {
-                messageDiv.innerHTML = '<p style="color: green;">Passord endret vellykket!</p>';
-                document.getElementById("change-password-form").reset();
-            }
-        }
-
-        // Vis/skjul passord-knapper
-        function initPasswordToggles() {
-            document.querySelectorAll('.password-toggle').forEach(btn => {
-            const targetId = btn.getAttribute('data-target');
-            const input = document.getElementById(targetId);
-            if (!input) return;
-
-            btn.addEventListener('click', () => {
-                const isPassword = input.type === 'password';
-                input.type = isPassword ? 'text' : 'password';
-                const img = btn.querySelector('img');
-                if (img) {
-                    img.src = isPassword ? 'images/eye-close.png' : 'images/eye-open.png';
-                    img.alt = isPassword ? 'Skjul passord' : 'Vis passord';
+            <img src="logo-placeholder.png" alt="SBS Logo" /> 
+            <nav id="main-nav"> 
+                <a href="index.html" class="nav-link">Hjem</a> 
+                <a href="sanger.html" class="nav-link">Sanger</a> 
+                <a href="betaling.html" class="nav-link">Betaling</a> 
+                <div class="dropdown" id="settings-dropdown"> <a href="#" class="nav-link dropdown-toggle" id="settings-toggle">Innstillinger</a> 
+                    <div class="dropdown-menu"> <a href="profil.html" class="dropdown-item">Min profil</a>
+                        <a href="profil.html#change-password" class="dropdown-item">Endre passord</a> 
+                        <a href="mailto:kontakt@sbs.no" class="dropdown-item">Kontakt oss</a> 
+                        <a href="#" id="logout-link" class="dropdown-item danger">Logg ut</a> 
+                    </div> 
+                </div> 
+            </nav> 
+        </div> 
+    </header> 
+    <section class="hero hero-small"> 
+        <h1>Min profil</h1> 
+        <p>Velkommen tilbake!</p> 
+    </section> 
+    <div class="container container-wide"> 
+        <div class="card" id="profile-card"> 
+            <h2>Profilinformasjon</h2>
+            <div id="profile-info"> 
+                <p>Laster profil...</p>
+            </div> </div> <div class="card" id="change-password"> 
+                <h2>Endre passord</h2> <form id="change-password-form"> 
+                    <label for="current-password">Nåværende passord:</label> 
+                    <div class="password-field"> 
+                        <input type="password" id="current-password" name="current-password" required> 
+                        <button type="button" class="password-toggle" data-target="current-password"> 
+                            <img src="images/eye-open.png" alt="Vis passord"> 
+                        </button> 
+                    </div> 
+                    <label for="new-password">Nytt passord:</label> 
+                    <div class="password-field"> <input type="password" id="new-password" name="new-password" required minlength="6"> 
+                        <button type="button" class="password-toggle" data-target="new-password"> <img src="images/eye-open.png" alt="Vis passord"> 
+                        </button> 
+                    </div> 
+                    <label for="confirm-password">Bekreft nytt passord:</label> 
+                    <div class="password-field"> 
+                        <input type="password" id="confirm-password" name="confirm-password" required minlength="6"> 
+                        <button type="button" class="password-toggle" data-target="confirm-password"> 
+                            <img src="images/eye-open.png" alt="Vis passord"> </button> 
+                        </div> 
+                        <button type="submit" class="btn">Endre passord</button> 
+                    </form> 
+                    <div id="password-message" style="margin-top: var(--space-md);"></div> 
+                </div> 
+                <div class="card"> 
+                    <button id="logout-btn" class="btn">Logg ut</button> 
+                </div> 
+            </div> 
+            <footer> <p>SBS – Stabæk Bandy Support</p> 
+                <div class="footer-links"> <a href="mailto:kontakt@sbs.no"> 
+                    <span>📧</span> Kontakt oss </a> 
+                    <a href="https://www.instagram.com/stabaekbandy" target="_blank" rel="noopener noreferrer"> 
+                        <span>📷</span> Instagram </a> 
+                    </div> 
+                </footer> 
+            <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> 
+            <script>
+                // Robust Supabase-init
+                let supa = null;
+                if (window.supabase) {
+                  const { createClient } = supabase;
+                  supa = createClient(
+                    "https://mqkoeaswvafrhyyotpqh.supabase.co",
+                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xa29lYXN3dmFmcmh5eW90cHFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1ODMzMDAsImV4cCI6MjA4MDE1OTMwMH0.wQAcQFlUp77_46ycqfB--ywEN7uL5hRK0TdAy2PWkQs"
+                  );
+                } else {
+                  console.error("Supabase-biblioteket ble ikke lastet.");
                 }
-            });
-            });
-        }
-
-        // Dropdown funksjonalitet
-        function initDropdown() {
-            const dropdown = document.getElementById('settings-dropdown');
-            const toggle = document.getElementById('settings-toggle');
-            
-            if (toggle) {
-                toggle.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    dropdown?.classList.toggle('active');
-                });
-            }
-
-            // Lukk dropdown når man klikker utenfor
-            document.addEventListener('click', (e) => {
-                if (dropdown && !dropdown.contains(e.target)) {
-                    dropdown.classList.remove('active');
-                }
-            });
-        }
-
-        // Event listeners
-        document.getElementById("logout-btn").addEventListener("click", logout);
-        document.getElementById("logout-link")?.addEventListener("click", (e) => {
-        e.preventDefault();
-        logout();
-        });
-        document.getElementById("change-password-form").addEventListener("submit", changePassword);
-
-        // Håndter hash-link for "Endre passord"
-        if (window.location.hash === '#change-password') {
-            window.addEventListener('load', () => {
-                setTimeout(() => {
-                    const element = document.getElementById('change-password');
-                    if (element) {
-                        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              
+                async function checkAuth() {
+                  if (!supa) {
+                    const profileInfo = document.getElementById("profile-info");
+                    if (profileInfo) {
+                      profileInfo.innerHTML = "<p>Kunne ikke laste innlogging (Supabase mangler).</p>";
                     }
-                }, 100);
-            });
-        }
-
-        // Sjekk auth når siden lastes
-        checkAuth();
-        initDropdown();
-        initPasswordToggles();
-    </script>
-    </body>
+                    return;
+                  }
+              
+                  const {
+                    data: { session }
+                  } = await supa.auth.getSession();
+              
+                  if (!session) {
+                    window.location.href = "Inlogging.html";
+                    return;
+                  }
+              
+                  // Hent brukerdata fra members-tabellen
+                  const { data: memberData, error } = await supa
+                    .from("members")
+                    .select("*")
+                    .eq("auth_id", session.user.id)
+                    .single();
+              
+                  const user = session.user;
+                  const userMetadata = user.user_metadata || {};
+                  const profileInfo = document.getElementById("profile-info");
+              
+                  if (error && error.code !== "PGRST116") {
+                    console.error("Feil ved henting av profil:", error);
+                  }
+              
+                  const fullName =
+                    memberData?.full_name ||
+                    userMetadata.full_name ||
+                    user.email?.split("@")[0] ||
+                    "Bruker";
+                  const email = user.email || "Ikke oppgitt";
+                  const phone = memberData?.phone || userMetadata.phone || "Ikke oppgitt";
+                  const fanType = memberData?.bandy_fan_type || "SBS supporter";
+                  // Fjernet henting av alder og is_under_18
+                  const membershipStatus = memberData?.membership_status || "pending";
+                  const membershipPrice = memberData?.membership_price || 199.0;
+              
+                  // Formater medlemsstatus
+                  let statusText = "";
+                  let statusColor = "";
+              
+                  if (membershipStatus === "active" || membershipStatus === "paid") {
+                    statusText = "✅ Aktivt medlemskap";
+                    statusColor = "green";
+                  } else if (membershipStatus === "pending") {
+                    statusText = "⏳ Venter på betaling";
+                    statusColor = "orange";
+                  } else {
+                    statusText = "❌ Ikke aktivt";
+                    statusColor = "red";
+                  }
+              
+                  // Oppdatert HTML uten alder og rabatt-tekst
+                  profileInfo.innerHTML = `
+                    <p><strong>Navn:</strong> ${fullName}</p>
+                    <p><strong>E-post:</strong> ${email}</p>
+                    <p><strong>Telefonnummer:</strong> ${phone}</p>
+                    <p><strong>Type:</strong> ${fanType}</p>
+                    <div style="margin-top: var(--space-md); padding: var(--space-md); background: rgba(77, 163, 255, 0.1); border-radius: var(--radius-md);">
+                      <p style="margin: 0 0 var(--space-sm) 0;"><strong>Medlemsstatus:</strong>
+                      <span style="color: ${statusColor};">${statusText}</span></p>
+                      <p style="margin: 0;"><strong>Medlemspris:</strong>
+                      ${membershipPrice.toFixed(2)} kr</p>
+                      ${
+                        membershipStatus !== "active" && membershipStatus !== "paid"
+                          ? `<a href="betaling.html" class="btn" style="margin-top: var(--space-md); display: inline-block;">Fullfør betaling</a>`
+                          : ""
+                      }
+                    </div>
+                  `;
+                }
+              
+                // Logg ut funksjon
+                async function logout() {
+                  if (!supa) {
+                    window.location.href = "index.html";
+                    return;
+                  }
+              
+                  const { error } = await supa.auth.signOut();
+                  if (error) {
+                    alert("Feil ved utlogging: " + error.message);
+                  } else {
+                    window.location.href = "index.html";
+                  }
+                }
+              
+                // Endre passord funksjon
+                async function changePassword(event) {
+                  event.preventDefault();
+              
+                  if (!supa) {
+                    messageDiv.innerHTML = '<p style="color: red;">Kan ikke endre passord – Supabase er ikke tilgjengelig.</p>';
+                    return;
+                  }
+              
+                  const currentPassword = document.getElementById("current-password").value;
+                  const newPassword = document.getElementById("new-password").value;
+                  const confirmPassword = document.getElementById("confirm-password").value;
+                  const messageDiv = document.getElementById("password-message");
+              
+                  if (newPassword !== confirmPassword) {
+                    messageDiv.innerHTML = '<p style="color: red;">Nye passordene matcher ikke!</p>';
+                    return;
+                  }
+              
+                  if (newPassword.length < 6) {
+                    messageDiv.innerHTML = '<p style="color: red;">Nytt passord må være minst 6 tegn!</p>';
+                    return;
+                  }
+              
+                  const {
+                    data: { user }
+                  } = await supa.auth.getUser();
+              
+                  const { error: verifyError } = await supa.auth.signInWithPassword({
+                    email: user.email,
+                    password: currentPassword
+                  });
+              
+                  if (verifyError) {
+                    messageDiv.innerHTML = '<p style="color: red;">Nåværende passord er feil!</p>';
+                    return;
+                  }
+              
+                  const { error: updateError } = await supa.auth.updateUser({
+                    password: newPassword
+                  });
+              
+                  if (updateError) {
+                    messageDiv.innerHTML = `<p style="color: red;">Feil ved endring av passord: ${updateError.message}</p>`;
+                  } else {
+                    messageDiv.innerHTML = '<p style="color: green;">Passord endret vellykket!</p>';
+                    document.getElementById("change-password-form").reset();
+                  }
+                }
+              
+                function initPasswordToggles() {
+                  document.querySelectorAll(".password-toggle").forEach((btn) => {
+                    const targetId = btn.getAttribute("data-target");
+                    const input = document.getElementById(targetId);
+                    if (!input) return;
+              
+                    btn.addEventListener("click", () => {
+                      const isPassword = input.type === "password";
+                      input.type = isPassword ? "text" : "password";
+              
+                      const img = btn.querySelector("img");
+                      if (img) {
+                        img.src = isPassword ? "images/eye-close.png" : "images/eye-open.png";
+                        img.alt = isPassword ? "Skjul passord" : "Vis passord";
+                      }
+                    });
+                  });
+                }
+              
+                function initDropdown() {
+                  const dropdown = document.getElementById("settings-dropdown");
+                  const toggle = document.getElementById("settings-toggle");
+              
+                  if (toggle) {
+                    toggle.addEventListener("click", (e) => {
+                      e.preventDefault();
+                      dropdown?.classList.toggle("active");
+                    });
+                  }
+              
+                  document.addEventListener("click", (e) => {
+                    if (dropdown && !dropdown.contains(e.target)) {
+                      dropdown.classList.remove("active");
+                    }
+                  });
+                }
+              
+                document.getElementById("logout-btn").addEventListener("click", logout);
+                document.getElementById("logout-link")?.addEventListener("click", (e) => {
+                  e.preventDefault();
+                  logout();
+                });
+              
+                document
+                  .getElementById("change-password-form")
+                  .addEventListener("submit", changePassword);
+              
+                if (window.location.hash === "#change-password") {
+                  window.addEventListener("load", () => {
+                    setTimeout(() => {
+                      const element = document.getElementById("change-password");
+                      if (element) {
+                        element.scrollIntoView({ behavior: "smooth", block: "start" });
+                      }
+                    }, 100);
+                  });
+                }
+              
+                checkAuth();
+                initDropdown();
+                initPasswordToggles();
+              </script>
+</body>
 </html>
-
