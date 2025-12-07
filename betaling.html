@@ -45,13 +45,17 @@
       </div>
       
       <h3>Velg betalingsmetode:</h3>
-      <div style="display: flex; gap: var(--space-md); flex-wrap: wrap; margin: var(--space-lg) 0;">
-        <button id="card-payment-btn" class="btn" style="flex: 1; min-width: 200px;">
-          💳 Betal med kort
-        </button>
-        <button id="vipps-payment-btn" class="btn" style="flex: 1; min-width: 200px; background: linear-gradient(135deg, #FF5C8A 0%, #FF3D6E 100%);">
-          📱 Betal med Vipps
-        </button>
+      <div class="payment-methods">
+        <label>
+          <input type="radio" name="payment" value="vipps" checked>
+          <img src="images/vipps.jpg" alt="Vipps-logo" class="logo">
+          Vipps
+        </label>
+        <label>
+          <input type="radio" name="payment" value="credit-card">
+          <img src="images/credit-card.png" alt="Kredittkort-logo" class="logo">
+          Kredittkort
+        </label>
       </div>
       
       <div id="card-form" style="display: none; margin-top: var(--space-lg);">
