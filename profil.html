@@ -136,15 +136,22 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="common.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="common.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="common.js"></script>
     <script>
-        // Bruker nå 'supa', 'logoutUser()', og 'calculateMembershipDetails()' fra common.js
+        // Funksjon for å formatere datoer
+        function formatExpiryDate(dateString) {
+            if (!dateString) return "Ikke satt";
+            const date = new Date(dateString);
+            return date.toLocaleDateString("no-NO", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+            });
+        }
     
+        // Bruker nå 'supa', 'logoutUser()', og 'calculateMembershipDetails()' fra common.js
         async function checkAuth() {
             if (!supa) {
+                // ... (Kode uendret) ...
                 const profileInfo = document.getElementById("profile-info");
                 if (profileInfo) {
                     profileInfo.innerHTML =
@@ -187,9 +194,14 @@
                 "Bruker";
             const email = user.email || "Ikke oppgitt";
             const phone = memberData?.phone || userMetadata.phone || "Ikke oppgitt";
-            const fanType = memberData?.bandy_fan_type || "Ikke medlem"; 
+            const fanType = memberData?.bandy_fan_type || "Ikke medlem";
             const membershipStatus = memberData?.membership_status || "pending";
             const membershipPrice = membershipDetails.price;
+    
+            // *** NY DATA: Henter utløpsdato ***
+            const expiryDate = memberData?.membership_expiry_date; 
+            const formattedExpiryDate = formatExpiryDate(expiryDate);
+            // **********************************
     
             // Formater fødselsdato
             const formattedBirthdate = birthdate
@@ -200,25 +212,32 @@
                 })
                 : "Ikke oppgitt";
     
-            // Formater medlemsstatus med bilder
+            // Sjekk om medlemskapet er utløpt (kun hvis statusen er aktiv)
+            let isExpired = false;
+            if (membershipStatus === 'active' && expiryDate) {
+                isExpired = new Date(expiryDate) < new Date();
+            }
+    
+            // Formater medlemsstatus med bilder og sjekk utløp
             let statusText = "";
             let statusColor = "";
-            let statusIcon = ""; // Ny variabel for bilde-HTML
+            let statusIcon = "";
     
-            if (membershipStatus === "active" || membershipStatus === "paid") {
+            if (isExpired) {
+                statusText = "UTLØPT (Må fornyes)";
+                statusColor = "red";
+                statusIcon = '<img src="images/red-x.png" alt="Utløpt" style="height: 18px; width: 18px; vertical-align: middle; margin-right: 5px;">';
+            } else if (membershipStatus === "active" || membershipStatus === "paid") {
                 statusText = "Betalt & Aktivt";
                 statusColor = "green";
-                // Setter inn bildet for aktiv status
                 statusIcon = '<img src="images/green-check.png" alt="Aktiv" style="height: 18px; width: 18px; vertical-align: middle; margin-right: 5px;">';
             } else if (membershipStatus === "pending") {
-                statusText = "Ikke betalt";
-                statusColor = "red"; 
-                // Setter inn bildet for ventende status
+                statusText = "Venter på betaling";
+                statusColor = "orange";
                 statusIcon = '<img src="images/red-x.png" alt="Venter" style="height: 18px; width: 18px; vertical-align: middle; margin-right: 5px;">';
             } else {
                 statusText = "Ikke aktivt";
                 statusColor = "red";
-                // Setter inn bildet for inaktiv status
                 statusIcon = '<img src="images/red-x.png" alt="Inaktiv" style="height: 18px; width: 18px; vertical-align: middle; margin-right: 5px;">';
             }
     
@@ -231,21 +250,24 @@
               <div style="margin-top: var(--space-md); padding: var(--space-md); background: rgba(77, 163, 255, 0.1); border-radius: var(--radius-md);">
                 <p style="margin: 0 0 var(--space-sm) 0;"><strong>Medlemsstatus:</strong>
                 <span style="color: ${statusColor};">${statusIcon}${statusText}</span></p>
+                
+                ${(membershipStatus === 'active' || isExpired) ? `<p style="margin: 0 0 var(--space-sm) 0;"><strong>Utløpsdato:</strong> ${formattedExpiryDate}</p>` : ''}
+    
                 <p style="margin: 0;"><strong>Gjeldende medlemspris:</strong>
                 ${membershipPrice.toFixed(2)} kr</p>
                 <p style="font-size: 0.9em; margin-top: 5px;">${
                   membershipDetails.ageInfo
                 }</p>
                 ${
-                  membershipStatus !== "active" && membershipStatus !== "paid"
-                    ? `<a href="betaling.html" class="btn" style="margin-top: var(--space-md); display: inline-block;">Fullfør betaling</a>`
+                  membershipStatus !== "active" || isExpired
+                    ? `<a href="betaling.html" class="btn" style="margin-top: var(--space-md); display: inline-block;">Fullfør betaling / Forny medlemskap</a>`
                     : ""
                 }
               </div>
             `;
     
-            // Oppdaterer database-raden hvis prisen har endret seg.
-            if (memberData && memberData.membership_price !== membershipPrice) {
+            // ... (Resten av koden uendret: Oppdatering av pris og passordbytte) ...
+             if (memberData && memberData.membership_price !== membershipPrice) {
                 const { error: updateError } = await supa
                     .from("members")
                     .update({
@@ -259,55 +281,10 @@
                 }
             }
         }
-        /**
- * Funksjon for å slette brukeren. 
- * Krever at en Service Role eller Database Trigger håndterer slettingen 
- * av den tilknyttede raden i 'members' tabellen.
- */
-        async function deleteUser() {
-            if (!supa) {
-                document.getElementById("delete-message").innerHTML =
-                    '<p style="color: red;">Kan ikke slette konto – Supabase er ikke tilgjengelig.</p>';
-                return;
-            }
-
-            const confirmDelete = confirm("Er du sikker på at du vil slette kontoen din permanent? Dette kan ikke angres!");
-            if (!confirmDelete) {
-                return;
-            }
-
-            // 1. Logg ut brukeren først, av sikkerhetshensyn
-            await supa.auth.signOut(); 
-
-            // 2. Kaller Supabase for å slette brukeren
-            // MERK: Sletting av en AUTH-bruker fra klienten er som nevnt NESTEN ALLTID BLOKKERT
-            // Du må ideelt sett kalle en Edge Function her.
-            // Vi bruker en enkel (men kanskje blokkert) kall her og forutsetter en trigger:
-            
-            // Gammel metode som Supabase blokkerer:
-            // const { error } = await supa.auth.deleteUser(); 
-
-            // Siden deleteUser() er blokkert utenfor server/Edge, må du oppdatere metoden din.
-            
-            // FORESLÅTT KLIENT-SIDE LØSNING (Krever Service Role/Admin API):
-            // Vi kan ikke fullføre dette uten å bruke en Edge Function eller server-side kode.
-            
-            document.getElementById("delete-message").innerHTML =
-                '<p style="color: red;">Sletting av bruker må utføres via en Edge Function/Server for å sikre autorisasjon. Kontakt oss for å slette kontoen.</p>';
-
-            // Hvis du likevel ønsker en placeholder-funksjon, legg til:
-            
-            alert("Du er logget ut. Kontakt administrator for permanent sletting.");
-            window.location.href = "index.html";
-        }
-
-
-        // --- Legg til event listener ---
-        // Finn event listenerne nederst i script-blokken og legg til denne:
-        document.getElementById("delete-user-btn").addEventListener("click", deleteUser);
-        // Endre passord funksjon og Event Listeners er uendret
+    
+        // Endre passord funksjon (UBEHANDLET)
         async function changePassword(event) {
-            // ... (Logikk for passordbytte) ...
+            // ... (Logikk for passordbytte, uendret) ...
             event.preventDefault();
     
             if (!supa) {
@@ -364,6 +341,28 @@
             }
         }
     
+        // Funksjon for sletting av bruker (ubehandlet, krever Edge Function/Server)
+        async function deleteUser() {
+            if (!supa) {
+                document.getElementById("delete-message").innerHTML =
+                    '<p style="color: red;">Kan ikke slette konto – Supabase er ikke tilgjengelig.</p>';
+                return;
+            }
+    
+            const confirmDelete = confirm("Er du sikker på at du vil slette kontoen din permanent? Dette kan ikke angres!");
+            if (!confirmDelete) {
+                return;
+            }
+    
+            await supa.auth.signOut(); 
+    
+            document.getElementById("delete-message").innerHTML =
+                '<p style="color: red;">Sletting av bruker må utføres via en Edge Function/Server for å sikre autorisasjon. Kontakt administrator for permanent sletting.</p>';
+    
+            alert("Du er logget ut. Kontakt administrator for permanent sletting.");
+            window.location.href = "index.html";
+        }
+    
         document
             .getElementById("logout-btn")
             .addEventListener("click", logoutUser);
@@ -371,6 +370,7 @@
             e.preventDefault();
             logoutUser();
         });
+        document.getElementById("delete-user-btn").addEventListener("click", deleteUser);
     
         document
             .getElementById("change-password-form")
