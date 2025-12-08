@@ -579,7 +579,42 @@
   .footer-links a {
     margin: 0;
   }
-  
+  .notification-toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333; /* Mørk bakgrunn */
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    opacity: 0; /* Skjult som standard */
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out, visibility 0.3s;
+    z-index: 2000; /* Sikrer at den er øverst */
+    display: flex;
+    align-items: center;
+}
+
+.notification-toast.show {
+    opacity: 1;
+    visibility: visible;
+    /* Liten animasjon for at den skal komme opp */
+    transform: translateX(-50%) translateY(0); 
+}
+
+.toast-icon {
+    margin-right: 10px;
+}
+
+.toast-message {
+    font-weight: bold;
+}
+.toast-logo {
+  max-width: 16px;
+  aspect-ratio: 1/1;
+}
   @media (max-width: 768px) {
     .header-content {
       flex-direction: column;

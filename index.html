@@ -1,147 +1,172 @@
 <!DOCTYPE html>
 <html lang="no">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Bli medlem – SBS (Stabæk Bandy Support)</title>
-<link rel="stylesheet" href="style.css?v=2">
-</head>
-<body>
-<header>
-  <div class="header-content">
-    <img src="logo-placeholder.png" alt="SBS Logo" />
-    <nav id="main-nav">
-      <a href="index.html" class="nav-link active">Hjem</a>
-      <a href="sanger.html" class="nav-link">Sanger</a>
-      <a href="betaling.html" class="nav-link">Betaling</a>
-      <a href="Inlogging.html" class="nav-link auth-link">Logg inn</a>
-      <a href="registrer.html" class="nav-link auth-link">Registrer</a>
-      <div class="dropdown profile-link" id="settings-dropdown" style="display: none;">
-        <a href="#" class="nav-link dropdown-toggle" id="settings-toggle">Innstillinger</a>
-        <div class="dropdown-menu">
-          <a href="profil.html" class="dropdown-item">Min profil</a>
-          <a href="profil.html#change-password" class="dropdown-item">Endre passord</a>
-          <a href="mailto:kontakt@sbs.no" class="dropdown-item">Kontakt oss</a>
-          <a href="#" id="logout-link" class="dropdown-item danger">Logg ut</a>
-        </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bli medlem – SBS (Stabæk Bandy Support)</title>
+    <link rel="stylesheet" href="style.css?v=2" />
+  </head>
+  <body>
+    <header>
+      <div class="header-content">
+        <img src="logo-placeholder.png" alt="SBS Logo" />
+        <nav id="main-nav">
+          <a href="index.html" class="nav-link active">Hjem</a>
+          <a href="sanger.html" class="nav-link">Sanger</a>
+          <a href="betaling.html" class="nav-link">Betaling</a>
+          <a href="Inlogging.html" class="nav-link auth-link">Logg inn</a>
+          <a href="registrer.html" class="nav-link auth-link">Registrer</a>
+          <div
+            class="dropdown profile-link"
+            id="settings-dropdown"
+            style="display: none"
+          >
+            <a href="#" class="nav-link dropdown-toggle" id="settings-toggle">
+              Innstillinger
+            </a>
+            <div class="dropdown-menu">
+              <a href="profil.html" class="dropdown-item"> Min profil </a>
+              <a href="profil.html#change-password" class="dropdown-item">
+                Endre passord
+              </a>
+              <a href="mailto:kontakt@sbs.no" class="dropdown-item">
+                Kontakt oss
+              </a>
+              <a href="#" id="logout-link" class="dropdown-item danger">
+                Logg ut
+              </a>
+            </div>
+          </div>
+        </nav>
       </div>
-    </nav>
-  </div>
-</header>
-<section class="hero">
-<h1>Bli medlem i SBS – Stabæk Bandy Support</h1>
-<p>Støtt Stabæk Bandy og bli en del av et unikt fellesskap!</p>
-</section>
-<div class="container">
-<div class="card">
-<h2>Hvorfor bli medlem?</h2>
-<p>Stabæk Bandy har en av Norges stolteste bandytradisjoner, og med SBS ønsker vi å bygge et sterkt støtteapparat rundt klubben – både på og utenfor banen. Som medlem bidrar du til å styrke miljøet, arrangementene og opplevelsen for alle som elsker bandy.</p>
-</div>
-<div class="card">
-<h2>Fordeler som medlem</h2>
-<ul>
-<li>Støtt laget i med- og motgang</li>
-<li>Eksklusiv informasjon om kamper og arrangementer</li>
-<li>Tilgang til medlemstreff og supporteraktiviteter</li>
-<li>Mulighet til å påvirke utviklingen av SBS</li>
-</ul>
-</div>
-<div class="card">
-<h2>Medlemskap</h2>
-<p>Pris: <strong>199 kr per sesong</strong></p>
-<a class="btn" href="betaling.html">Gå til betaling</a>
-</div>
-</div>
+    </header>
+    <section class="hero">
+      <h1>Bli medlem i SBS – Stabæk Bandy Support</h1>
+      <p>Støtt Stabæk Bandy og bli en del av et unikt fellesskap!</p>
+    </section>
+    <div class="container">
+      <div class="card">
+        <h2>Hvorfor bli medlem?</h2>
+        <p>
+          Stabæk Bandy har en av Norges stolteste bandytradisjoner, og med SBS
+          ønsker vi å bygge et sterkt støtteapparat rundt klubben – både på og
+          utenfor banen. Som medlem bidrar du til å styrke miljøet,
+          arrangementene og opplevelsen for alle som elsker bandy.
+        </p>
+      </div>
+      <div class="card">
+        <h2>Fordeler som medlem</h2>
+        <ul>
+          <li>Støtt laget i med- og motgang</li>
+          <li>Eksklusiv informasjon om kamper og arrangementer</li>
+          <li>Tilgang til medlemstreff og supporteraktiviteter</li>
+          <li>Mulighet til å påvirke utviklingen av SBS</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Medlemskap</h2>
+        <p>Pris: <strong>200 kr per sesong</strong></p>
+        <a class="btn" href="betaling.html">Gå til betaling</a>
+      </div>
+    </div>
 
-<footer>
-<p>SBS – Stabæk Bandy Support</p>
-<p>Stolt supporter av Stabæk Bandy</p>
-<div class="footer-links">
-  <a href="mailto:kontakt@sbs.no">
-    <span>📧</span> Kontakt oss
-  </a>
-  <a href="https://www.instagram.com/stabaekbandy" target="_blank" rel="noopener noreferrer">
-    <span>📷</span> Instagram
-  </a>
-</div>
-</footer>
-</body>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-  // Sørg for at Supabase-feil ikke knekker menyen (f.eks. på GitHub Pages)
-  let supa = null;
-  if (window.supabase) {
-    const { createClient } = supabase;
-    supa = createClient(
-      "https://mqkoeaswvafrhyyotpqh.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xa29lYXN3dmFmcmh5eW90cHFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1ODMzMDAsImV4cCI6MjA4MDE1OTMwMH0.wQAcQFlUp77_46ycqfB--ywEN7uL5hRK0TdAy2PWkQs"
-    );
-  } else {
-    console.error("Supabase-biblioteket ble ikke lastet.");
-  }
-
-  // Dropdown funksjonalitet
-  function initDropdown() {
-    const dropdown = document.getElementById('settings-dropdown');
-    const toggle = document.getElementById('settings-toggle');
-    
-    if (toggle) {
-      toggle.addEventListener('click', (e) => {
-        e.preventDefault();
-        dropdown?.classList.toggle('active');
-      });
-    }
-
-    // Lukk dropdown når man klikker utenfor
-    document.addEventListener('click', (e) => {
-      if (dropdown && !dropdown.contains(e.target)) {
-        dropdown.classList.remove('active');
-      }
-    });
-  }
-
-  async function updateNavigation() {
-    // Hvis Supabase ikke er tilgjengelig, bare vis standardmeny og sørg for at dropdown funker
-    const authLinks = document.querySelectorAll('.auth-link');
-    const profileLinks = document.querySelectorAll('.profile-link');
-    const logoutLink = document.getElementById('logout-link');
-
-    if (!supa) {
-      authLinks.forEach(link => link.style.display = 'block');
-      profileLinks.forEach(link => link.style.display = 'none');
-      initDropdown();
-      return;
-    }
-
-    const { data: { session } } = await supa.auth.getSession();
-
-    if (session) {
-      authLinks.forEach(link => link.style.display = 'none');
-      profileLinks.forEach(link => link.style.display = 'block');
+    <footer>
+      <p>SBS – Stabæk Bandy Support</p>
+      <p>Stolt supporter av Stabæk Bandy</p>
+      <div class="footer-links">
+        <a href="mailto:kontakt@sbs.no">
+          <img src="images/mail.png" alt="Email-logo" class="logo" /> Kontakt
+          oss
+        </a>
+        <a
+          href="https://www.instagram.com/stabaek.klakken"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img src="images/instagram.png" alt="Instagram-logo" class="logo" />
+          Instagram
+        </a>
+      </div>
+    </footer>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // Sørg for at Supabase-feil ikke knekker menyen (f.eks. på GitHub Pages)
+    let supa = null;
+    if (window.supabase) {
+      const { createClient } = supabase;
+      supa = createClient(
+        "https://mqkoeaswvafrhyyotpqh.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xa29lYXN3dmFmcmh5eW90cHFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1ODMzMDAsImV4cCI6MjA4MDE1OTMwMH0.wQAcQFlUp77_46ycqfB--ywEN7uL5hRK0TdAy2PWkQs"
+      );
     } else {
-      authLinks.forEach(link => link.style.display = 'block');
-      profileLinks.forEach(link => link.style.display = 'none');
+      console.error("Supabase-biblioteket ble ikke lastet.");
     }
 
-    if (logoutLink) {
-      logoutLink.addEventListener('click', async (e) => {
-        e.preventDefault();
-        const { error } = await supa.auth.signOut();
-        if (!error) {
-          window.location.reload();
+    // Dropdown funksjonalitet
+    function initDropdown() {
+      const dropdown = document.getElementById("settings-dropdown");
+      const toggle = document.getElementById("settings-toggle");
+
+      if (toggle) {
+        toggle.addEventListener("click", (e) => {
+          e.preventDefault();
+          dropdown?.classList.toggle("active");
+        });
+      }
+
+      // Lukk dropdown når man klikker utenfor
+      document.addEventListener("click", (e) => {
+        if (dropdown && !dropdown.contains(e.target)) {
+          dropdown.classList.remove("active");
         }
       });
     }
 
-    initDropdown();
-  }
+    async function updateNavigation() {
+      // Hvis Supabase ikke er tilgjengelig, bare vis standardmeny og sørg for at dropdown funker
+      const authLinks = document.querySelectorAll(".auth-link");
+      const profileLinks = document.querySelectorAll(".profile-link");
+      const logoutLink = document.getElementById("logout-link");
 
-  updateNavigation();
+      if (!supa) {
+        authLinks.forEach((link) => (link.style.display = "block"));
+        profileLinks.forEach((link) => (link.style.display = "none"));
+        initDropdown();
+        return;
+      }
 
-  if (supa) {
-    supa.auth.onAuthStateChange(() => {
-      updateNavigation();
-    });
-  }
-</script>
+      const {
+        data: { session },
+      } = await supa.auth.getSession();
+
+      if (session) {
+        authLinks.forEach((link) => (link.style.display = "none"));
+        profileLinks.forEach((link) => (link.style.display = "block"));
+      } else {
+        authLinks.forEach((link) => (link.style.display = "block"));
+        profileLinks.forEach((link) => (link.style.display = "none"));
+      }
+
+      if (logoutLink) {
+        logoutLink.addEventListener("click", async (e) => {
+          e.preventDefault();
+          const { error } = await supa.auth.signOut();
+          if (!error) {
+            window.location.reload();
+          }
+        });
+      }
+
+      initDropdown();
+    }
+
+    updateNavigation();
+
+    if (supa) {
+      supa.auth.onAuthStateChange(() => {
+        updateNavigation();
+      });
+    }
+  </script>
 </html>

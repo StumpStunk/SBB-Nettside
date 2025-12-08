@@ -1,202 +1,254 @@
 <html lang="no">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Sanger – SBS</title>
-<link rel="stylesheet" href="style.css?v=2">
-</head>
-<body>
-<header>
-  <div class="header-content">
-    <img src="logo-placeholder.png" alt="SBS Logo" />
-    <nav id="main-nav">
-      <a href="index.html" class="nav-link">Hjem</a>
-      <a href="sanger.html" class="nav-link active">Sanger</a>
-      <a href="betaling.html" class="nav-link">Betaling</a>
-      <a href="Inlogging.html" class="nav-link auth-link">Logg inn</a>
-      <a href="registrer.html" class="nav-link auth-link">Registrer</a>
-      <div class="dropdown profile-link" id="settings-dropdown" style="display: none;">
-        <a href="#" class="nav-link dropdown-toggle" id="settings-toggle">Innstillinger</a>
-        <div class="dropdown-menu">
-          <a href="profil.html" class="dropdown-item">Min profil</a>
-          <a href="profil.html#change-password" class="dropdown-item">Endre passord</a>
-          <a href="mailto:kontakt@sbs.no" class="dropdown-item">Kontakt oss</a>
-          <a href="#" id="logout-link" class="dropdown-item danger">Logg ut</a>
-        </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sanger – SBS</title>
+    <link rel="stylesheet" href="style.css?v=2" />
+  </head>
+  <body>
+    <div id="copy-notification" class="notification-toast">
+      <span class="toast-icon"><img src="images/check.png" alt="checkmark" class="toast-logo"></span>
+      <span class="toast-message">Sang kopiert til utklippstavlen!</span>
+    </div>
+    <header>
+      <div class="header-content">
+        <img src="logo-placeholder.png" alt="SBS Logo" />
+        <nav id="main-nav">
+          <a href="index.html" class="nav-link"> Hjem </a>
+          <a href="sanger.html" class="nav-link active"> Sanger </a>
+          <a href="betaling.html" class="nav-link"> Betaling </a>
+          <a href="Inlogging.html" class="nav-link auth-link"> Logg inn </a>
+          <a href="registrer.html" class="nav-link auth-link"> Registrer </a>
+          <div
+            class="dropdown profile-link"
+            id="settings-dropdown"
+            style="display: none"
+          >
+            <a href="#" class="nav-link dropdown-toggle" id="settings-toggle"
+              > Innstillinger </a
+            >
+            <div class="dropdown-menu">
+              <a href="profil.html" class="dropdown-item"> Min profil </a>
+              <a href="profil.html#change-password" class="dropdown-item"
+                > Passord </a
+              >
+              <a href="mailto:kontakt@sbs.no" class="dropdown-item"
+                > Kontakt oss </a
+              >
+              <a href="#" id="logout-link" class="dropdown-item danger"
+                > Logg ut </a
+              >
+            </div>
+          </div>
+        </nav>
       </div>
-    </nav>
-  </div>
-</header>
-<section class="hero hero-small">
-  <h1>Sanger</h1>
-  <p>Samle og del tribunelåter for å skape best mulig stemning på kamp.</p>
-</section>
-<div class="container">
-  <div class="card">
-    <h2>Supporterlåter</h2>
-    <p class="muted-text">Her er en samling av tribunelåter. Du kan kopiere tekstene og dele med andre supportere.</p>
-    <ul class="song-list">
-      <li>
-        <button type="button" class="copy-song-btn" title="Kopier sang">
-          <img src="images/copy.png" alt="Kopier">
-        </button>
-        <strong>VI ER STABÆK BANDY I FRA BÆRUM</strong><br>
-        Vi er Stabæk Bandy i fra Bærum<br>
-        Plassen kunstis er vårt hjem<br>
-        Bli med og syng for Stabæk gutta<br>
-        Så vi reiser hjem med to poen<br>
-        oååååå med sakte klapping
-      </li>
-      <li>
-        <button type="button" class="copy-song-btn" title="Kopier sang">
-          <img src="images/copy.png" alt="Kopier">
-        </button>
-        <strong>Forza Stabæk inn med ballen</strong><br>
-        Forza Stabæk<br>
-        Inn med ballen <br>
-        Åoååoååoååå<br>
-        Forza Stabæk<br>
-        Innmed ballen<br>
-        Åoååoååoååå<br>
-      </li>
-      <li>
-        <button type="button" class="copy-song-btn" title="Kopier sang">
-          <img src="images/copy.png" alt="Kopier">
-        </button>
-        <strong> BLØ FOR DRAKTA</strong><br>
-        Blø for drakta, Stabækgutta<br>
-        Hey hey<br>
-        Blø for drakta, Stabækgutta <br>
-        Hey hey<br>
-      </li>
-      <li>
-        <button type="button" class="copy-song-btn" title="Kopier sang">
-          <img src="images/copy.png" alt="Kopier">
-        </button>
-        <strong>VI VIL HA EN BLAA SESONG</strong><br>
-        Vi vil ha en blaa sesong<br>
-        Rå og hard og uten dong<br>
-        Da vet du hva du skal få<br>
-        Den skal være blaa<br>
-      </li>
-      <li>
-        <button type="button" class="copy-song-btn" title="Kopier sang">
-          <img src="images/copy.png" alt="Kopier">
-        </button>
-        <strong> ENKLE OG KORTE ROP:</strong><br>
-        Forsanger: beste laget<br>
-        Alle svarer: Stabæk<br>
-        Vi elsker stabæk klapp klapp klapp klapp klapp<br>
-        Stabæk skal ha to poeng<br>
-        Det er vi som er STB<br>
-        oåoåoå vi skal vinne serien i år<br>
-        Stabæk support: Kom igjen Stabæk<br>
-        Hovis svarer: Kom igjen Stabæk
-      </li>
-    </ul>
-  </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-  // Robust Supabase-init så menyen ikke knekker om CDN feiler
-  let supa = null;
-  if (window.supabase) {
-    const { createClient } = supabase;
-    supa = createClient(
-      "https://mqkoeaswvafrhyyotpqh.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xa29lYXN3dmFmcmh5eW90cHFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1ODMzMDAsImV4cCI6MjA4MDE1OTMwMH0.wQAcQFlUp77_46ycqfB--ywEN7uL5hRK0TdAy2PWkQs"
-    );
-  } else {
-    console.error("Supabase-biblioteket ble ikke lastet.");
-  }
-
-  // Dropdown funksjonalitet
-  function initDropdown() {
-    const dropdown = document.getElementById('settings-dropdown');
-    const toggle = document.getElementById('settings-toggle');
-    
-    if (toggle) {
-      toggle.addEventListener('click', (e) => {
-        e.preventDefault();
-        dropdown?.classList.toggle('active');
-      });
-    }
-
-    // Lukk dropdown når man klikker utenfor
-    document.addEventListener('click', (e) => {
-      if (dropdown && !dropdown.contains(e.target)) {
-        dropdown.classList.remove('active');
+    </header>
+    <section class="hero hero-small">
+      <h1>Sanger</h1>
+      <p>Samle og del tribunelåter for å skape best mulig stemning på kamp.</p>
+    </section>
+    <div class="container">
+      <div class="card">
+        <h2>Supporterlåter</h2>
+        <p class="muted-text">
+          Her er en samling av tribunelåter. Du kan kopiere tekstene og dele med
+          andre supportere.
+        </p>
+        <ul class="song-list">
+          <li>
+            <button type="button" class="copy-song-btn" title="Kopier sang">
+              <img src="images/copy.png" alt="Kopier" />
+            </button>
+            <strong>VI ER STABÆK BANDY I FRA BÆRUM</strong><br />
+            Vi er Stabæk Bandy i fra Bærum<br />
+            Plassen kunstis er vårt hjem<br />
+            Bli med og syng for Stabæk gutta<br />
+            Så vi reiser hjem med to poen<br />
+            oååååå med sakte klapping
+          </li>
+          <li>
+            <button type="button" class="copy-song-btn" title="Kopier sang">
+              <img src="images/copy.png" alt="Kopier" />
+            </button>
+            <strong>Forza Stabæk inn med ballen</strong><br />
+            Forza Stabæk<br />
+            Inn med ballen <br />
+            Åoååoååoååå<br />
+            Forza Stabæk<br />
+            Innmed ballen<br />
+            Åoååoååoååå<br />
+          </li>
+          <li>
+            <button type="button" class="copy-song-btn" title="Kopier sang">
+              <img src="images/copy.png" alt="Kopier" />
+            </button>
+            <strong> BLØ FOR DRAKTA</strong><br />
+            Blø for drakta, Stabækgutta<br />
+            Hey hey<br />
+            Blø for drakta, Stabækgutta <br />
+            Hey hey<br />
+          </li>
+          <li>
+            <button type="button" class="copy-song-btn" title="Kopier sang">
+              <img src="images/copy.png" alt="Kopier" />
+            </button>
+            <strong>VI VIL HA EN BLAA SESONG</strong><br />
+            Vi vil ha en blaa sesong<br />
+            Rå og hard og uten dong<br />
+            Da vet du hva du skal få<br />
+            Den skal være blaa<br />
+          </li>
+          <li>
+            <button type="button" class="copy-song-btn" title="Kopier sang">
+              <img src="images/copy.png" alt="Kopier" />
+            </button>
+            <strong> ENKLE OG KORTE ROP:</strong><br />
+            Forsanger: beste laget<br />
+            Alle svarer: Stabæk<br />
+            Vi elsker stabæk klapp klapp klapp klapp klapp<br />
+            Stabæk skal ha to poeng<br />
+            Det er vi som er STB<br />
+            oåoåoå vi skal vinne serien i år<br />
+            Stabæk support: Kom igjen Stabæk<br />
+            Hovis svarer: Kom igjen Stabæk
+          </li>
+        </ul>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      // Robust Supabase-init så menyen ikke knekker om CDN feiler
+      let supa = null;
+      if (window.supabase) {
+        const { createClient } = supabase;
+        supa = createClient(
+          "https://mqkoeaswvafrhyyotpqh.supabase.co",
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xa29lYXN3dmFmcmh5eW90cHFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1ODMzMDAsImV4cCI6MjA4MDE1OTMwMH0.wQAcQFlUp77_46ycqfB--ywEN7uL5hRK0TdAy2PWkQs"
+        );
+      } else {
+        console.error("Supabase-biblioteket ble ikke lastet.");
       }
-    });
-  }
 
-  // Oppdater navigasjon basert på innloggingsstatus
-  async function updateNavigation() {
-    const authLinks = document.querySelectorAll('.auth-link');
-    const profileLinks = document.querySelectorAll('.profile-link');
-    const logoutLink = document.getElementById('logout-link');
+      // Dropdown funksjonalitet
+      function initDropdown() {
+        const dropdown = document.getElementById("settings-dropdown");
+        const toggle = document.getElementById("settings-toggle");
 
-    if (!supa) {
-      authLinks.forEach(link => link.style.display = 'block');
-      profileLinks.forEach(link => link.style.display = 'none');
-      initDropdown();
-      return;
-    }
-
-    const { data: { session } } = await supa.auth.getSession();
-
-    if (session) {
-      authLinks.forEach(link => link.style.display = 'none');
-      profileLinks.forEach(link => link.style.display = 'block');
-    } else {
-      authLinks.forEach(link => link.style.display = 'block');
-      profileLinks.forEach(link => link.style.display = 'none');
-    }
-
-    if (logoutLink) {
-      logoutLink.addEventListener('click', async (e) => {
-        e.preventDefault();
-        const { error } = await supa.auth.signOut();
-        if (!error) {
-          window.location.href = "index.html";
+        if (toggle) {
+          toggle.addEventListener("click", (e) => {
+            e.preventDefault();
+            dropdown?.classList.toggle("active");
+          });
         }
-      });
-    }
 
-    initDropdown();
-  }
+        // Lukk dropdown når man klikker utenfor
+        document.addEventListener("click", (e) => {
+          if (dropdown && !dropdown.contains(e.target)) {
+            dropdown.classList.remove("active");
+          }
+        });
+      }
 
-  updateNavigation();
-  if (supa) {
-    supa.auth.onAuthStateChange(() => {
+      // Oppdater navigasjon basert på innloggingsstatus
+      async function updateNavigation() {
+        const authLinks = document.querySelectorAll(".auth-link");
+        const profileLinks = document.querySelectorAll(".profile-link");
+        const logoutLink = document.getElementById("logout-link");
+
+        if (!supa) {
+          authLinks.forEach((link) => (link.style.display = "block"));
+          profileLinks.forEach((link) => (link.style.display = "none"));
+          initDropdown();
+          return;
+        }
+
+        const {
+          data: { session },
+        } = await supa.auth.getSession();
+
+        if (session) {
+          authLinks.forEach((link) => (link.style.display = "none"));
+          profileLinks.forEach((link) => (link.style.display = "block"));
+        } else {
+          authLinks.forEach((link) => (link.style.display = "block"));
+          profileLinks.forEach((link) => (link.style.display = "none"));
+        }
+
+        if (logoutLink) {
+          logoutLink.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const { error } = await supa.auth.signOut();
+            if (!error) {
+              window.location.href = "index.html";
+            }
+          });
+        }
+
+        initDropdown();
+      }
+
       updateNavigation();
-    });
-  }
+      if (supa) {
+        supa.auth.onAuthStateChange(() => {
+          updateNavigation();
+        });
+      }
+      // Funksjon for å vise notifikasjonspopup
+      function showCopyNotification() {
+        const toast = document.getElementById("copy-notification");
 
-  // Kopier sang-tekst til utklippstavlen
-  document.querySelectorAll('.copy-song-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const li = btn.closest('li');
-      if (!li) return;
-      const clone = li.cloneNode(true);
-      // Fjern knappen fra kopien
-      const btnInClone = clone.querySelector('.copy-song-btn');
-      if (btnInClone) btnInClone.remove();
-      const text = clone.innerText.trim();
-      navigator.clipboard?.writeText(text).catch(() => {});
-    });
-  });
-</script>
-<footer>
-  <p>SBS – Stabæk Bandy Support</p>
-  <div class="footer-links">
-    <a href="mailto:kontakt@sbs.no">
-      <span>📧</span> Kontakt oss
-    </a>
-    <a href="https://www.instagram.com/stabaekbandy" target="_blank" rel="noopener noreferrer">
-      <span>📷</span> Instagram
-    </a>
-  </div>
-</footer>
-</body>
+        // Vis popuppen
+        toast.classList.add("show");
+
+        // Skjul popuppen automatisk etter 2 sekunder
+        setTimeout(() => {
+          toast.classList.remove("show");
+        }, 2000); // 3000 millisekunder = 2 sekunder
+      }
+
+      // Kopier sang-tekst til utklippstavlen
+      document.querySelectorAll(".copy-song-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const li = btn.closest("li");
+          if (!li) return;
+
+          // 1. Klargjør teksten
+          const clone = li.cloneNode(true);
+          // Fjern knappen fra kopien
+          const btnInClone = clone.querySelector(".copy-song-btn");
+          if (btnInClone) btnInClone.remove();
+          const text = clone.innerText.trim();
+
+          // 2. Kopier til utklippstavlen
+          navigator.clipboard
+            ?.writeText(text)
+            .then(() => {
+              // 3. Viser notifikasjonen KUN hvis kopieringen lyktes
+              showCopyNotification();
+            })
+            .catch((err) => {
+              // Håndterer feil (f.eks. hvis brukeren ikke har gitt tillatelse)
+              console.error("Kunne ikke kopiere tekst:", err);
+            });
+        });
+      });
+    </script>
+    <footer>
+      <p>SBS – Stabæk Bandy Support</p>
+      <div class="footer-links">
+        <a href="mailto:kontakt@sbs.no">
+          <img src="images/mail.png" alt="Email-logo" class="logo" /> Kontakt
+          oss
+        </a>
+        <a
+          href="https://www.instagram.com/stabaek.klakken"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img src="images/instagram.png" alt="Instagram-logo" class="logo" />
+          Instagram
+        </a>
+      </div>
+    </footer>
+  </body>
 </html>
