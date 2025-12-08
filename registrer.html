@@ -66,7 +66,12 @@
           <input id="phone" type="tel" placeholder="12345678" required />
 
           <label for="birthdate">Fødselsdato</label>
-          <input id="birthdate" type="date" required />
+          <input
+            id="birthdate"
+            type="date"
+            required
+            placeholder="Velg din fødselsdato"
+          />
 
           <label for="password">Passord</label>
           <div class="password-field">
@@ -150,7 +155,7 @@
         alert("Vennligst oppgi en gyldig fødselsdato.");
         return;
       }
-      
+
       // Beregn medlemsdetaljer for å sette initial pris og junior-status
       const details = calculateMembershipDetails(birthdate);
 
@@ -171,7 +176,7 @@
             phone: phone,
             birthdate: birthdate, // Lagres i auth.users.user_metadata
             is_junior: details.isJunior, // Kan brukes i RLS/Triggere
-            membership_price: details.price // Kan brukes i RLS/Triggere
+            membership_price: details.price, // Kan brukes i RLS/Triggere
           },
         },
       });

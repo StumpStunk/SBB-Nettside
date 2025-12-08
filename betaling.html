@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Betaling – SBS</title>
-    <link rel="stylesheet" href="style.css?v=2" />
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <header>
@@ -72,12 +72,23 @@
           <h3>Velg betalingsmetode:</h3>
           <div class="payment-methods">
             <label>
-              <input type="radio" name="payment" value="vipps" id="vipps-radio" checked />
+              <input
+                type="radio"
+                name="payment"
+                value="vipps"
+                id="vipps-radio"
+                checked
+              />
               <img src="images/vipps.jpg" alt="Vipps-logo" class="logo" />
               Vipps
             </label>
             <label>
-              <input type="radio" name="payment" value="credit-card" id="card-radio" />
+              <input
+                type="radio"
+                name="payment"
+                value="credit-card"
+                id="card-radio"
+              />
               <img
                 src="images/credit-card.png"
                 alt="Kredittkort-logo"
@@ -117,10 +128,7 @@
             </div>
           </div>
 
-          <div
-            id="vipps-form"
-            style="margin-top: var(--space-lg)"
-          >
+          <div id="vipps-form" style="margin-top: var(--space-lg)">
             <h4>Vipps-betaling</h4>
             <p class="muted-text">
               Vipps-betaling vil bli implementert med Vipps API.
@@ -161,7 +169,9 @@
           return;
         }
 
-        const { data: { session } } = await supa.auth.getSession();
+        const {
+          data: { session },
+        } = await supa.auth.getSession();
 
         if (!session) {
           document.getElementById("payment-info").innerHTML =
@@ -195,8 +205,10 @@
         }
 
         // Beregn detaljer for å få oppdatert aldersinformasjon
-        const membershipDetails = calculateMembershipDetails(memberData.birthdate);
-        
+        const membershipDetails = calculateMembershipDetails(
+          memberData.birthdate
+        );
+
         // Bruk pris fra DB som fallback, men den skal i prinsippet matche den kalkulerte prisen
         const price = memberData.membership_price || membershipDetails.price;
         const membershipStatus = memberData.membership_status || "pending";
@@ -204,8 +216,8 @@
         // Vis pris og aldersinfo
         document.getElementById("membership-price").textContent =
           price.toFixed(2) + " kr";
-        document.getElementById("age-info").textContent = membershipDetails.ageInfo;
-
+        document.getElementById("age-info").textContent =
+          membershipDetails.ageInfo;
 
         if (membershipStatus === "active" || membershipStatus === "paid") {
           document.getElementById("payment-info").innerHTML = `
@@ -218,7 +230,7 @@
         } else {
           document.getElementById("payment-info").style.display = "none";
           document.getElementById("payment-form").style.display = "block";
-          
+
           // Sikrer at Vipps er valgt som default ved lasting av skjema
           document.getElementById("vipps-form").style.display = "block";
           document.getElementById("card-form").style.display = "none";
@@ -226,12 +238,12 @@
       }
 
       // Håndter bytte av betalingsmetode
-      document.querySelectorAll('input[name="payment"]').forEach(radio => {
-        radio.addEventListener('change', (event) => {
-          if (event.target.value === 'vipps') {
+      document.querySelectorAll('input[name="payment"]').forEach((radio) => {
+        radio.addEventListener("change", (event) => {
+          if (event.target.value === "vipps") {
             document.getElementById("vipps-form").style.display = "block";
             document.getElementById("card-form").style.display = "none";
-          } else if (event.target.value === 'credit-card') {
+          } else if (event.target.value === "credit-card") {
             document.getElementById("vipps-form").style.display = "none";
             document.getElementById("card-form").style.display = "block";
           }

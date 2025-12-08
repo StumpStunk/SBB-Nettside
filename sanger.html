@@ -3,11 +3,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sanger – SBS</title>
-    <link rel="stylesheet" href="style.css?v=2" />
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div id="copy-notification" class="notification-toast">
-      <span class="toast-icon"><img src="images/check.png" alt="checkmark" class="toast-logo"></span>
+      <span class="toast-icon"
+        ><img src="images/check.png" alt="checkmark" class="toast-logo"
+      /></span>
       <span class="toast-message">Sang kopiert til utklippstavlen!</span>
     </div>
     <header>
@@ -24,20 +26,20 @@
             id="settings-dropdown"
             style="display: none"
           >
-            <a href="#" class="nav-link dropdown-toggle" id="settings-toggle"
-              > Innstillinger </a
-            >
+            <a href="#" class="nav-link dropdown-toggle" id="settings-toggle">
+              Innstillinger
+            </a>
             <div class="dropdown-menu">
               <a href="profil.html" class="dropdown-item"> Min profil </a>
-              <a href="profil.html#change-password" class="dropdown-item"
-                > Passord </a
-              >
-              <a href="mailto:kontakt@sbs.no" class="dropdown-item"
-                > Kontakt oss </a
-              >
-              <a href="#" id="logout-link" class="dropdown-item danger"
-                > Logg ut </a
-              >
+              <a href="profil.html#change-password" class="dropdown-item">
+                Passord
+              </a>
+              <a href="mailto:kontakt@sbs.no" class="dropdown-item">
+                Kontakt oss
+              </a>
+              <a href="#" id="logout-link" class="dropdown-item danger">
+                Logg ut
+              </a>
             </div>
           </div>
         </nav>
@@ -124,7 +126,7 @@
         toast.classList.add("show");
         setTimeout(() => {
           toast.classList.remove("show");
-        }, 2000); 
+        }, 2000);
       }
 
       // Kopier sang-tekst til utklippstavlen (UNIK FOR DENNE SIDEN)
