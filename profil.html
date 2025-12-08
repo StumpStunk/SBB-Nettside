@@ -102,6 +102,17 @@
         </form>
         <div id="password-message" style="margin-top: var(--space-md)"></div>
       </div>
+      <div class="card" id="delete-account-card">
+        <h2>Slett konto permanent</h2>
+        <p class="muted-text">
+          Denne handlingen er <span style="font: bolder; font-size: 20px;">permanent</span> og kan ikke angres. Alle dine data vil bli slettet fra systemet vårt.
+        </p>
+        <button id="delete-user-btn" class="btn delete-btn">
+          Slett min konto
+        </button>
+        <div id="delete-message" style="margin-top: var(--space-md)"></div>
+      </div>
+
       <div class="card">
         <button id="logout-btn" class="btn">Logg ut</button>
       </div>
@@ -125,208 +136,258 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="common.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="common.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="common.js"></script>
     <script>
-      // Bruker nå 'supa', 'logoutUser()', og 'calculateMembershipDetails()' fra common.js
-
-      async function checkAuth() {
-        if (!supa) {
-          const profileInfo = document.getElementById("profile-info");
-          if (profileInfo) {
-            profileInfo.innerHTML =
-              "<p>Kunne ikke laste innlogging (Supabase mangler).</p>";
-          }
-          return;
-        }
-
-        const {
-          data: { session },
-        } = await supa.auth.getSession();
-
-        if (!session) {
-          window.location.href = "Inlogging.html";
-          return;
-        }
-
-        // Hent brukerdata fra members-tabellen
-        const { data: memberData, error } = await supa
-          .from("members")
-          .select("*")
-          .eq("auth_id", session.user.id)
-          .maybeSingle();
-
-        const user = session.user;
-        const userMetadata = user.user_metadata || {};
-        const profileInfo = document.getElementById("profile-info");
-
-        if (error && error.code !== "PGRST116") {
-          console.error("Feil ved henting av profil:", error);
-        }
-
-        // Henter fødselsdato fra memberData (fra trigger) eller userMetadata (fra registrering)
-        const birthdate =
-          memberData?.birthdate || userMetadata.birthdate || null;
-
-        // Beregn pris og aldersstatus basert på fødselsdato
-        const membershipDetails = calculateMembershipDetails(birthdate);
-
-        const fullName =
-          memberData?.full_name ||
-          userMetadata.full_name ||
-          user.email?.split("@")[0] ||
-          "Bruker";
-        const email = user.email || "Ikke oppgitt";
-        const phone = memberData?.phone || userMetadata.phone || "Ikke oppgitt";
-        const fanType = memberData?.bandy_fan_type || "SBS supporter";
-        const membershipStatus = memberData?.membership_status || "pending";
-        // Bruker den kalkulerte prisen
-        const membershipPrice = membershipDetails.price;
-
-        // Formater fødselsdato
-        const formattedBirthdate = birthdate
-          ? new Date(birthdate).toLocaleDateString("no-NO", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })
-          : "Ikke oppgitt";
-
-        // Formater medlemsstatus
-        let statusText = "";
-        let statusColor = "";
-
-        if (membershipStatus === "active" || membershipStatus === "paid") {
-          statusText = "✅ Aktivt medlemskap";
-          statusColor = "green";
-        } else if (membershipStatus === "pending") {
-          statusText = "⏳ Venter på betaling";
-          statusColor = "orange";
-        } else {
-          statusText = "❌ Ikke aktivt";
-          statusColor = "red";
-        }
-
-        profileInfo.innerHTML = `
-          <p><strong>Navn:</strong> ${fullName}</p>
-          <p><strong>E-post:</strong> ${email}</p>
-          <p><strong>Telefonnummer:</strong> ${phone}</p>
-          <p><strong>Fødselsdato:</strong> ${formattedBirthdate}</p>
-          <p><strong>Type:</strong> ${fanType}</p>
-          <div style="margin-top: var(--space-md); padding: var(--space-md); background: rgba(77, 163, 255, 0.1); border-radius: var(--radius-md);">
-            <p style="margin: 0 0 var(--space-sm) 0;"><strong>Medlemsstatus:</strong>
-            <span style="color: ${statusColor};">${statusText}</span></p>
-            <p style="margin: 0;"><strong>Gjeldende medlemspris:</strong>
-            ${membershipPrice.toFixed(2)} kr</p>
-            <p style="font-size: 0.9em; margin-top: 5px;">${
-              membershipDetails.ageInfo
-            }</p>
-            ${
-              membershipStatus !== "active" && membershipStatus !== "paid"
-                ? `<a href="betaling.html" class="btn" style="margin-top: var(--space-md); display: inline-block;">Fullfør betaling</a>`
-                : ""
+        // Bruker nå 'supa', 'logoutUser()', og 'calculateMembershipDetails()' fra common.js
+    
+        async function checkAuth() {
+            if (!supa) {
+                const profileInfo = document.getElementById("profile-info");
+                if (profileInfo) {
+                    profileInfo.innerHTML =
+                        "<p>Kunne ikke laste innlogging (Supabase mangler).</p>";
+                }
+                return;
             }
-          </div>
-        `;
-
-        // Oppdaterer database-raden hvis prisen har endret seg.
-        // Dette er viktig for at betalingssiden skal ha riktig info neste gang den lastes.
-        if (memberData && memberData.membership_price !== membershipPrice) {
-          const { error: updateError } = await supa
-            .from("members")
-            .update({
-              membership_price: membershipPrice,
-              is_junior: membershipDetails.isJunior,
-            })
-            .eq("auth_id", session.user.id);
-
-          if (updateError) {
-            console.error("Feil ved oppdatering av medlemspris:", updateError);
-          }
-        }
-      }
-
-      // Endre passord funksjon (UBEHANDLET)
-      async function changePassword(event) {
-        // ... (Logikk for passordbytte, uendret fra forrige versjon) ...
-        event.preventDefault();
-
-        if (!supa) {
-          document.getElementById("password-message").innerHTML =
-            '<p style="color: red;">Kan ikke endre passord – Supabase er ikke tilgjengelig.</p>';
-          return;
-        }
-
-        const currentPassword =
-          document.getElementById("current-password").value;
-        const newPassword = document.getElementById("new-password").value;
-        const confirmPassword =
-          document.getElementById("confirm-password").value;
-        const messageDiv = document.getElementById("password-message");
-
-        if (newPassword !== confirmPassword) {
-          messageDiv.innerHTML =
-            '<p style="color: red;">Nye passordene matcher ikke!</p>';
-          return;
-        }
-
-        if (newPassword.length < 6) {
-          messageDiv.innerHTML =
-            '<p style="color: red;">Nytt passord må være minst 6 tegn!</p>';
-          return;
-        }
-
-        const {
-          data: { user },
-        } = await supa.auth.getUser();
-
-        const { error: verifyError } = await supa.auth.signInWithPassword({
-          email: user.email,
-          password: currentPassword,
-        });
-
-        if (verifyError) {
-          messageDiv.innerHTML =
-            '<p style="color: red;">Nåværende passord er feil!</p>';
-          return;
-        }
-
-        const { error: updateError } = await supa.auth.updateUser({
-          password: newPassword,
-        });
-
-        if (updateError) {
-          messageError = `Feil ved endring av passord: ${updateError.message}`;
-          messageDiv.innerHTML = `<p style="color: red;">${messageError}</p>`;
-        } else {
-          messageDiv.innerHTML =
-            '<p style="color: green;">Passord endret vellykket!</p>';
-          document.getElementById("change-password-form").reset();
-        }
-      }
-
-      document
-        .getElementById("logout-btn")
-        .addEventListener("click", logoutUser);
-      document.getElementById("logout-link")?.addEventListener("click", (e) => {
-        e.preventDefault();
-        logoutUser();
-      });
-
-      document
-        .getElementById("change-password-form")
-        .addEventListener("submit", changePassword);
-
-      if (window.location.hash === "#change-password") {
-        window.addEventListener("load", () => {
-          setTimeout(() => {
-            const element = document.getElementById("change-password");
-            if (element) {
-              element.scrollIntoView({ behavior: "smooth", block: "start" });
+    
+            const {
+                data: { session },
+            } = await supa.auth.getSession();
+    
+            if (!session) {
+                window.location.href = "Inlogging.html";
+                return;
             }
-          }, 100);
-        });
-      }
+    
+            // Hent brukerdata fra members-tabellen
+            const { data: memberData, error } = await supa
+                .from("members")
+                .select("*")
+                .eq("auth_id", session.user.id)
+                .maybeSingle();
+    
+            const user = session.user;
+            const userMetadata = user.user_metadata || {};
+            const profileInfo = document.getElementById("profile-info");
+    
+            if (error && error.code !== "PGRST116") {
+                console.error("Feil ved henting av profil:", error);
+            }
+    
+            const birthdate = memberData?.birthdate || userMetadata.birthdate || null;
+            const membershipDetails = calculateMembershipDetails(birthdate);
+    
+            const fullName =
+                memberData?.full_name ||
+                userMetadata.full_name ||
+                user.email?.split("@")[0] ||
+                "Bruker";
+            const email = user.email || "Ikke oppgitt";
+            const phone = memberData?.phone || userMetadata.phone || "Ikke oppgitt";
+            const fanType = memberData?.bandy_fan_type || "Ikke medlem"; 
+            const membershipStatus = memberData?.membership_status || "pending";
+            const membershipPrice = membershipDetails.price;
+    
+            // Formater fødselsdato
+            const formattedBirthdate = birthdate
+                ? new Date(birthdate).toLocaleDateString("no-NO", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                })
+                : "Ikke oppgitt";
+    
+            // Formater medlemsstatus med bilder
+            let statusText = "";
+            let statusColor = "";
+            let statusIcon = ""; // Ny variabel for bilde-HTML
+    
+            if (membershipStatus === "active" || membershipStatus === "paid") {
+                statusText = "Betalt & Aktivt";
+                statusColor = "green";
+                // Setter inn bildet for aktiv status
+                statusIcon = '<img src="images/green-check.png" alt="Aktiv" style="height: 18px; width: 18px; vertical-align: middle; margin-right: 5px;">';
+            } else if (membershipStatus === "pending") {
+                statusText = "Ikke betalt";
+                statusColor = "red"; 
+                // Setter inn bildet for ventende status
+                statusIcon = '<img src="images/red-x.png" alt="Venter" style="height: 18px; width: 18px; vertical-align: middle; margin-right: 5px;">';
+            } else {
+                statusText = "Ikke aktivt";
+                statusColor = "red";
+                // Setter inn bildet for inaktiv status
+                statusIcon = '<img src="images/red-x.png" alt="Inaktiv" style="height: 18px; width: 18px; vertical-align: middle; margin-right: 5px;">';
+            }
+    
+            profileInfo.innerHTML = `
+              <p><strong>Navn:</strong> ${fullName}</p>
+              <p><strong>E-post:</strong> ${email}</p>
+              <p><strong>Telefonnummer:</strong> ${phone}</p>
+              <p><strong>Fødselsdato:</strong> ${formattedBirthdate}</p>
+              <p><strong>Type:</strong> ${fanType}</p> 
+              <div style="margin-top: var(--space-md); padding: var(--space-md); background: rgba(77, 163, 255, 0.1); border-radius: var(--radius-md);">
+                <p style="margin: 0 0 var(--space-sm) 0;"><strong>Medlemsstatus:</strong>
+                <span style="color: ${statusColor};">${statusIcon}${statusText}</span></p>
+                <p style="margin: 0;"><strong>Gjeldende medlemspris:</strong>
+                ${membershipPrice.toFixed(2)} kr</p>
+                <p style="font-size: 0.9em; margin-top: 5px;">${
+                  membershipDetails.ageInfo
+                }</p>
+                ${
+                  membershipStatus !== "active" && membershipStatus !== "paid"
+                    ? `<a href="betaling.html" class="btn" style="margin-top: var(--space-md); display: inline-block;">Fullfør betaling</a>`
+                    : ""
+                }
+              </div>
+            `;
+    
+            // Oppdaterer database-raden hvis prisen har endret seg.
+            if (memberData && memberData.membership_price !== membershipPrice) {
+                const { error: updateError } = await supa
+                    .from("members")
+                    .update({
+                        membership_price: membershipPrice,
+                        is_junior: membershipDetails.isJunior,
+                    })
+                    .eq("auth_id", session.user.id);
+    
+                if (updateError) {
+                    console.error("Feil ved oppdatering av medlemspris:", updateError);
+                }
+            }
+        }
+        /**
+ * Funksjon for å slette brukeren. 
+ * Krever at en Service Role eller Database Trigger håndterer slettingen 
+ * av den tilknyttede raden i 'members' tabellen.
+ */
+        async function deleteUser() {
+            if (!supa) {
+                document.getElementById("delete-message").innerHTML =
+                    '<p style="color: red;">Kan ikke slette konto – Supabase er ikke tilgjengelig.</p>';
+                return;
+            }
 
-      checkAuth();
+            const confirmDelete = confirm("Er du sikker på at du vil slette kontoen din permanent? Dette kan ikke angres!");
+            if (!confirmDelete) {
+                return;
+            }
+
+            // 1. Logg ut brukeren først, av sikkerhetshensyn
+            await supa.auth.signOut(); 
+
+            // 2. Kaller Supabase for å slette brukeren
+            // MERK: Sletting av en AUTH-bruker fra klienten er som nevnt NESTEN ALLTID BLOKKERT
+            // Du må ideelt sett kalle en Edge Function her.
+            // Vi bruker en enkel (men kanskje blokkert) kall her og forutsetter en trigger:
+            
+            // Gammel metode som Supabase blokkerer:
+            // const { error } = await supa.auth.deleteUser(); 
+
+            // Siden deleteUser() er blokkert utenfor server/Edge, må du oppdatere metoden din.
+            
+            // FORESLÅTT KLIENT-SIDE LØSNING (Krever Service Role/Admin API):
+            // Vi kan ikke fullføre dette uten å bruke en Edge Function eller server-side kode.
+            
+            document.getElementById("delete-message").innerHTML =
+                '<p style="color: red;">Sletting av bruker må utføres via en Edge Function/Server for å sikre autorisasjon. Kontakt oss for å slette kontoen.</p>';
+
+            // Hvis du likevel ønsker en placeholder-funksjon, legg til:
+            
+            alert("Du er logget ut. Kontakt administrator for permanent sletting.");
+            window.location.href = "index.html";
+        }
+
+
+        // --- Legg til event listener ---
+        // Finn event listenerne nederst i script-blokken og legg til denne:
+        document.getElementById("delete-user-btn").addEventListener("click", deleteUser);
+        // Endre passord funksjon og Event Listeners er uendret
+        async function changePassword(event) {
+            // ... (Logikk for passordbytte) ...
+            event.preventDefault();
+    
+            if (!supa) {
+                document.getElementById("password-message").innerHTML =
+                    '<p style="color: red;">Kan ikke endre passord – Supabase er ikke tilgjengelig.</p>';
+                return;
+            }
+    
+            const currentPassword =
+                document.getElementById("current-password").value;
+            const newPassword = document.getElementById("new-password").value;
+            const confirmPassword =
+                document.getElementById("confirm-password").value;
+            const messageDiv = document.getElementById("password-message");
+    
+            if (newPassword !== confirmPassword) {
+                messageDiv.innerHTML =
+                    '<p style="color: red;">Nye passordene matcher ikke!</p>';
+                return;
+            }
+    
+            if (newPassword.length < 6) {
+                messageDiv.innerHTML =
+                    '<p style="color: red;">Nytt passord må være minst 6 tegn!</p>';
+                return;
+            }
+    
+            const {
+                data: { user },
+            } = await supa.auth.getUser();
+    
+            const { error: verifyError } = await supa.auth.signInWithPassword({
+                email: user.email,
+                password: currentPassword,
+            });
+    
+            if (verifyError) {
+                messageDiv.innerHTML =
+                    '<p style="color: red;">Nåværende passord er feil!</p>';
+                return;
+            }
+    
+            const { error: updateError } = await supa.auth.updateUser({
+                password: newPassword,
+            });
+    
+            if (updateError) {
+                messageError = `Feil ved endring av passord: ${updateError.message}`;
+                messageDiv.innerHTML = `<p style="color: red;">${messageError}</p>`;
+            } else {
+                messageDiv.innerHTML =
+                    '<p style="color: green;">Passord endret vellykket!</p>';
+                document.getElementById("change-password-form").reset();
+            }
+        }
+    
+        document
+            .getElementById("logout-btn")
+            .addEventListener("click", logoutUser);
+        document.getElementById("logout-link")?.addEventListener("click", (e) => {
+            e.preventDefault();
+            logoutUser();
+        });
+    
+        document
+            .getElementById("change-password-form")
+            .addEventListener("submit", changePassword);
+    
+        if (window.location.hash === "#change-password") {
+            window.addEventListener("load", () => {
+                setTimeout(() => {
+                    const element = document.getElementById("change-password");
+                    if (element) {
+                        element.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }
+                }, 100);
+            });
+        }
+    
+        checkAuth();
     </script>
   </body>
 </html>

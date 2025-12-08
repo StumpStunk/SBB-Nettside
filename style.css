@@ -659,6 +659,16 @@ footer a:hover {
   max-width: 16px;
   aspect-ratio: 1/1;
 }
+/* Legg til nederst i style.css for å style sletteknappen */
+.delete-btn {
+    background: linear-gradient(135deg, #dc3545 0%, #a71d2a 100%); /* Rød farge */
+    border: 1px solid #dc3545;
+}
+
+.delete-btn:hover {
+    background: linear-gradient(135deg, #a71d2a 0%, #dc3545 100%);
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+}
 /* Styling for Datovelger (input type="date") */
 
 /* 1. Skjul nettleser-standard ikoner og piler */

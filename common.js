@@ -14,7 +14,7 @@ if (window.supabase) {
 }
 
 // STANDARD PRISER
-const PRICE_ADULT = 200.0;
+const PRICE_ADULT = 150.0;
 const PRICE_JUNIOR = 100.0;
 
 function calculateMembershipDetails(birthdate, currentDate = new Date()) {
