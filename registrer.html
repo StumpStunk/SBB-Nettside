@@ -65,6 +65,9 @@
           <label for="phone">Telefonnummer</label>
           <input id="phone" type="tel" placeholder="12345678" required />
 
+          <label for="birthdate">Fødselsdato</label>
+          <input id="birthdate" type="date" required />
+
           <label for="password">Passord</label>
           <div class="password-field">
             <input
@@ -123,20 +126,33 @@
     </footer>
   </body>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="common.js"></script>
   <script>
-    const supa = supabase.createClient(
-      "https://mqkoeaswvafrhyyotpqh.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xa29lYXN3dmFmcmh5eW90cHFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1ODMzMDAsImV4cCI6MjA4MDE1OTMwMH0.wQAcQFlUp77_46ycqfB--ywEN7uL5hRK0TdAy2PWkQs"
-    );
+    // Bruker nå 'supa' og 'calculateMembershipDetails' fra common.js
 
     async function registerUser(event) {
       event.preventDefault();
+
+      if (!supa) {
+        alert("Feil: Supabase er ikke tilgjengelig.");
+        return;
+      }
 
       const email = document.getElementById("email").value;
       const pass = document.getElementById("password").value;
       const name = document.getElementById("name").value;
       const phone = document.getElementById("phone").value;
+      const birthdate = document.getElementById("birthdate").value; // NY
       const passwordConfirm = document.getElementById("password_confirm").value;
+
+      // Validering: Sjekk om dato er fylt ut og rimelig
+      if (!birthdate || new Date(birthdate) > new Date()) {
+        alert("Vennligst oppgi en gyldig fødselsdato.");
+        return;
+      }
+      
+      // Beregn medlemsdetaljer for å sette initial pris og junior-status
+      const details = calculateMembershipDetails(birthdate);
 
       // Valider at passordene matcher
       if (pass !== passwordConfirm) {
@@ -145,26 +161,25 @@
       }
 
       // 1. Opprett bruker hos Supabase Auth
-      // MERK: Databasen din vil automatisk opprette en rad i 'members' via triggeren.
-      const { data, error } = await supa.auth.signUp({
+      // MERK: Denne sender nå fødselsdatoen som metadata.
+      const { error } = await supa.auth.signUp({
         email: email,
         password: pass,
         options: {
           data: {
             full_name: name,
             phone: phone,
+            birthdate: birthdate, // Lagres i auth.users.user_metadata
+            is_junior: details.isJunior, // Kan brukes i RLS/Triggere
+            membership_price: details.price // Kan brukes i RLS/Triggere
           },
         },
       });
 
       if (error) {
-        // Viser feilmeldingen fra Supabase Auth (f.eks. "Passordet er for kort" eller "E-posten er allerede i bruk")
         alert(error.message);
         return;
       }
-
-      // 2. FJERN MANUELL INSERT: Vi stoler nå på Database Triggeren for å sette inn i 'members'.
-      // Triggeren kjører automatisk AFTER INSERT på auth.users.
 
       alert(
         "Registrering vellykket! Sjekk e-posten din for å bekrefte kontoen din. En bekreftelseslink er sendt til " +
@@ -174,82 +189,5 @@
       // Omdiriger brukeren til innlogging
       window.location.href = "Inlogging.html";
     }
-
-    // Vis/skjul passord-knapper
-    function initPasswordToggles() {
-      document.querySelectorAll(".password-toggle").forEach((btn) => {
-        const targetId = btn.getAttribute("data-target");
-        const input = document.getElementById(targetId);
-        if (!input) return;
-
-        btn.addEventListener("click", () => {
-          const isPassword = input.type === "password";
-          input.type = isPassword ? "text" : "password";
-          const img = btn.querySelector("img");
-          if (img) {
-            img.src = isPassword
-              ? "images/eye-close.png"
-              : "images/eye-open.png";
-            img.alt = isPassword ? "Skjul passord" : "Vis passord";
-          }
-        });
-      });
-    }
-
-    // Dropdown funksjonalitet
-    function initDropdown() {
-      const dropdown = document.getElementById("settings-dropdown");
-      const toggle = document.getElementById("settings-toggle");
-
-      if (toggle) {
-        toggle.addEventListener("click", (e) => {
-          e.preventDefault();
-          dropdown?.classList.toggle("active");
-        });
-      }
-
-      // Lukk dropdown når man klikker utenfor
-      document.addEventListener("click", (e) => {
-        if (dropdown && !dropdown.contains(e.target)) {
-          dropdown.classList.remove("active");
-        }
-      });
-    }
-
-    // Oppdater navigasjon basert på innloggingsstatus
-    async function updateNavigation() {
-      const {
-        data: { session },
-      } = await supa.auth.getSession();
-      const authLinks = document.querySelectorAll(".auth-link");
-      const profileLinks = document.querySelectorAll(".profile-link");
-      const logoutLink = document.getElementById("logout-link");
-
-      if (session) {
-        authLinks.forEach((link) => (link.style.display = "none"));
-        profileLinks.forEach((link) => (link.style.display = "block"));
-      } else {
-        authLinks.forEach((link) => (link.style.display = "block"));
-        profileLinks.forEach((link) => (link.style.display = "none"));
-      }
-
-      if (logoutLink) {
-        logoutLink.addEventListener("click", async (e) => {
-          e.preventDefault();
-          const { error } = await supa.auth.signOut();
-          if (!error) {
-            window.location.href = "index.html";
-          }
-        });
-      }
-
-      initDropdown();
-      initPasswordToggles();
-    }
-
-    updateNavigation();
-    supa.auth.onAuthStateChange(() => {
-      updateNavigation();
-    });
   </script>
 </html>

@@ -116,97 +116,18 @@
       </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="common.js"></script>
     <script>
-      // Robust Supabase-init så menyen ikke knekker om CDN feiler
-      let supa = null;
-      if (window.supabase) {
-        const { createClient } = supabase;
-        supa = createClient(
-          "https://mqkoeaswvafrhyyotpqh.supabase.co",
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xa29lYXN3dmFmcmh5eW90cHFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1ODMzMDAsImV4cCI6MjA4MDE1OTMwMH0.wQAcQFlUp77_46ycqfB--ywEN7uL5hRK0TdAy2PWkQs"
-        );
-      } else {
-        console.error("Supabase-biblioteket ble ikke lastet.");
-      }
-
-      // Dropdown funksjonalitet
-      function initDropdown() {
-        const dropdown = document.getElementById("settings-dropdown");
-        const toggle = document.getElementById("settings-toggle");
-
-        if (toggle) {
-          toggle.addEventListener("click", (e) => {
-            e.preventDefault();
-            dropdown?.classList.toggle("active");
-          });
-        }
-
-        // Lukk dropdown når man klikker utenfor
-        document.addEventListener("click", (e) => {
-          if (dropdown && !dropdown.contains(e.target)) {
-            dropdown.classList.remove("active");
-          }
-        });
-      }
-
-      // Oppdater navigasjon basert på innloggingsstatus
-      async function updateNavigation() {
-        const authLinks = document.querySelectorAll(".auth-link");
-        const profileLinks = document.querySelectorAll(".profile-link");
-        const logoutLink = document.getElementById("logout-link");
-
-        if (!supa) {
-          authLinks.forEach((link) => (link.style.display = "block"));
-          profileLinks.forEach((link) => (link.style.display = "none"));
-          initDropdown();
-          return;
-        }
-
-        const {
-          data: { session },
-        } = await supa.auth.getSession();
-
-        if (session) {
-          authLinks.forEach((link) => (link.style.display = "none"));
-          profileLinks.forEach((link) => (link.style.display = "block"));
-        } else {
-          authLinks.forEach((link) => (link.style.display = "block"));
-          profileLinks.forEach((link) => (link.style.display = "none"));
-        }
-
-        if (logoutLink) {
-          logoutLink.addEventListener("click", async (e) => {
-            e.preventDefault();
-            const { error } = await supa.auth.signOut();
-            if (!error) {
-              window.location.href = "index.html";
-            }
-          });
-        }
-
-        initDropdown();
-      }
-
-      updateNavigation();
-      if (supa) {
-        supa.auth.onAuthStateChange(() => {
-          updateNavigation();
-        });
-      }
-      // Funksjon for å vise notifikasjonspopup
+      // Funksjon for å vise notifikasjonspopup (UNIK FOR DENNE SIDEN)
       function showCopyNotification() {
         const toast = document.getElementById("copy-notification");
-
-        // Vis popuppen
         toast.classList.add("show");
-
-        // Skjul popuppen automatisk etter 2 sekunder
         setTimeout(() => {
           toast.classList.remove("show");
-        }, 2000); // 3000 millisekunder = 2 sekunder
+        }, 2000); 
       }
 
-      // Kopier sang-tekst til utklippstavlen
+      // Kopier sang-tekst til utklippstavlen (UNIK FOR DENNE SIDEN)
       document.querySelectorAll(".copy-song-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
           const li = btn.closest("li");
@@ -214,7 +135,6 @@
 
           // 1. Klargjør teksten
           const clone = li.cloneNode(true);
-          // Fjern knappen fra kopien
           const btnInClone = clone.querySelector(".copy-song-btn");
           if (btnInClone) btnInClone.remove();
           const text = clone.innerText.trim();
@@ -227,7 +147,6 @@
               showCopyNotification();
             })
             .catch((err) => {
-              // Håndterer feil (f.eks. hvis brukeren ikke har gitt tillatelse)
               console.error("Kunne ikke kopiere tekst:", err);
             });
         });

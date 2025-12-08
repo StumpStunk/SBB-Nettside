@@ -70,24 +70,35 @@
 </div>
 
 <footer>
-    <p>SBS – Stabæk Bandy Support</p>
+  <p>SBS – Stabæk Bandy Support</p>
+  <div class="footer-links">
+    <a href="mailto:kontakt@sbs.no">
+      <img src="images/mail.png" alt="Email-logo" class="logo"> Kontakt oss
+    </a>
+    <a href="https://www.instagram.com/stabaek.klakken" target="_blank" rel="noopener noreferrer">
+      <img src="images/instagram.png" alt="Instagram-logo" class="logo"> Instagram
+    </a>
+  </div>
 </footer>
 
 </body>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="common.js"></script>
 <script>
-  const supa = supabase.createClient(
-    "https://mqkoeaswvafrhyyotpqh.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xa29lYXN3dmFmcmh5eW90cHFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1ODMzMDAsImV4cCI6MjA4MDE1OTMwMH0.wQAcQFlUp77_46ycqfB--ywEN7uL5hRK0TdAy2PWkQs"
-  );
+  // Bruker nå 'supa' fra common.js
 
   async function loginUser(event) {
     event.preventDefault();
 
+    if (!supa) {
+        alert("Feil: Supabase er ikke tilgjengelig.");
+        return;
+    }
+    
     const email = document.getElementById("email").value;
     const pass = document.getElementById("password").value;
 
-    const { data, error } = await supa.auth.signInWithPassword({
+    const { error } = await supa.auth.signInWithPassword({
       email: email,
       password: pass
     });
@@ -97,17 +108,21 @@
       return;
     }
 
-    alert("Innlogging vellykket!");
+    // Innlogging vellykket - Navigasjon oppdateres av common.js etterpå
     window.location.href = "profil.html";
   }
 
   async function resetPassword(event) {
     event.preventDefault();
     
+    if (!supa) {
+        document.getElementById("reset-message").innerHTML = '<p style="color: red;">Feil: Supabase er ikke tilgjengelig.</p>';
+        return;
+    }
+    
     const email = document.getElementById("reset-email").value;
     const messageDiv = document.getElementById("reset-message");
     
-    // Bruk GitHub Pages‑URL som redirect etter klikk på e‑postlenken
     const resetUrl = 'https://stumpstunk.github.io/SBB-Nettside/reset-password.html';
 
     const { error } = await supa.auth.resetPasswordForEmail(email, {
@@ -121,6 +136,7 @@
     }
   }
 
+  // UI-logikk
   document.getElementById("forgot-password-link")?.addEventListener("click", (e) => {
     e.preventDefault();
     document.querySelector(".card:first-of-type").style.display = "none";
@@ -136,91 +152,5 @@
   });
 
   document.getElementById("forgot-password-form")?.addEventListener("submit", resetPassword);
-
-  // Vis/skjul passord-knapp
-  function initPasswordToggles() {
-    document.querySelectorAll('.password-toggle').forEach(btn => {
-      const targetId = btn.getAttribute('data-target');
-      const input = document.getElementById(targetId);
-      if (!input) return;
-
-      btn.addEventListener('click', () => {
-        const isPassword = input.type === 'password';
-        input.type = isPassword ? 'text' : 'password';
-        const img = btn.querySelector('img');
-        if (img) {
-          img.src = isPassword ? 'images/eye-close.png' : 'images/eye-open.png';
-          img.alt = isPassword ? 'Skjul passord' : 'Vis passord';
-        }
-      });
-    });
-  }
-
-  // Dropdown funksjonalitet
-  function initDropdown() {
-    const dropdown = document.getElementById('settings-dropdown');
-    const toggle = document.getElementById('settings-toggle');
-    
-    if (toggle) {
-      toggle.addEventListener('click', (e) => {
-        e.preventDefault();
-        dropdown?.classList.toggle('active');
-      });
-    }
-
-    // Lukk dropdown når man klikker utenfor
-    document.addEventListener('click', (e) => {
-      if (dropdown && !dropdown.contains(e.target)) {
-        dropdown.classList.remove('active');
-      }
-    });
-  }
-
-  async function updateNavigation() {
-    const { data: { session } } = await supa.auth.getSession();
-    const authLinks = document.querySelectorAll('.auth-link');
-    const profileLinks = document.querySelectorAll('.profile-link');
-    const logoutLink = document.getElementById('logout-link');
-
-    if (session) {
-      authLinks.forEach(link => link.style.display = 'none');
-      profileLinks.forEach(link => link.style.display = 'block');
-    } else {
-      authLinks.forEach(link => link.style.display = 'block');
-      profileLinks.forEach(link => link.style.display = 'none');
-    }
-
-    if (logoutLink) {
-      logoutLink.addEventListener('click', async (e) => {
-        e.preventDefault();
-        const { error } = await supa.auth.signOut();
-        if (!error) {
-          window.location.href = "index.html";
-        }
-      });
-    }
-
-    initDropdown();
-  }
-
-  updateNavigation();
-  supa.auth.onAuthStateChange(() => {
-    updateNavigation();
-  });
-
-  // Init vis/skjul passord
-  initPasswordToggles();
 </script>
-<footer>
-  <p>SBS – Stabæk Bandy Support</p>
-  <div class="footer-links">
-    <a href="mailto:kontakt@sbs.no">
-      <img src="images/mail.png" alt="Email-logo" class="logo"> Kontakt oss
-    </a>
-    <a href="https://www.instagram.com/stabaek.klakken" target="_blank" rel="noopener noreferrer">
-      <img src="images/instagram.png" alt="Instagram-logo" class="logo"> Instagram
-    </a>
-  </div>
-</footer>
-</body>
 </html>

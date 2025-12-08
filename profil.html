@@ -14,7 +14,7 @@
           <a href="index.html" class="nav-link"> Hjem </a>
           <a href="sanger.html" class="nav-link"> Sanger </a>
           <a href="betaling.html" class="nav-link"> Betaling </a>
-          <div class="dropdown" id="settings-dropdown">
+          <div class="dropdown profile-link" id="settings-dropdown">
             <a href="#" class="nav-link dropdown-toggle" id="settings-toggle">
               Innstillinger
             </a>
@@ -124,18 +124,9 @@
       </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="common.js"></script>
     <script>
-      // Robust Supabase-init
-      let supa = null;
-      if (window.supabase) {
-        const { createClient } = supabase;
-        supa = createClient(
-          "https://mqkoeaswvafrhyyotpqh.supabase.co",
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xa29lYXN3dmFmcmh5eW90cHFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1ODMzMDAsImV4cCI6MjA4MDE1OTMwMH0.wQAcQFlUp77_46ycqfB--ywEN7uL5hRK0TdAy2PWkQs"
-        );
-      } else {
-        console.error("Supabase-biblioteket ble ikke lastet.");
-      }
+      // Bruker nå 'supa', 'logoutUser()', og 'calculateMembershipDetails()' fra common.js
 
       async function checkAuth() {
         if (!supa) {
@@ -147,9 +138,7 @@
           return;
         }
 
-        const {
-          data: { session },
-        } = await supa.auth.getSession();
+        const { data: { session } } = await supa.auth.getSession();
 
         if (!session) {
           window.location.href = "Inlogging.html";
@@ -161,7 +150,7 @@
           .from("members")
           .select("*")
           .eq("auth_id", session.user.id)
-          .single();
+          .maybeSingle();
 
         const user = session.user;
         const userMetadata = user.user_metadata || {};
@@ -170,6 +159,13 @@
         if (error && error.code !== "PGRST116") {
           console.error("Feil ved henting av profil:", error);
         }
+        
+        // Henter fødselsdato fra memberData (fra trigger) eller userMetadata (fra registrering)
+        const birthdate = memberData?.birthdate || userMetadata.birthdate || null;
+        
+        // Beregn pris og aldersstatus basert på fødselsdato
+        const membershipDetails = calculateMembershipDetails(birthdate);
+
 
         const fullName =
           memberData?.full_name ||
@@ -179,9 +175,15 @@
         const email = user.email || "Ikke oppgitt";
         const phone = memberData?.phone || userMetadata.phone || "Ikke oppgitt";
         const fanType = memberData?.bandy_fan_type || "SBS supporter";
-        // Fjernet henting av alder og is_under_18
         const membershipStatus = memberData?.membership_status || "pending";
-        const membershipPrice = memberData?.membership_price || 0.0;
+        // Bruker den kalkulerte prisen
+        const membershipPrice = membershipDetails.price;
+
+        // Formater fødselsdato
+        const formattedBirthdate = birthdate 
+            ? new Date(birthdate).toLocaleDateString('no-NO', { year: 'numeric', month: 'long', day: 'numeric' }) 
+            : "Ikke oppgitt";
+
 
         // Formater medlemsstatus
         let statusText = "";
@@ -198,48 +200,51 @@
           statusColor = "red";
         }
 
-        // Oppdatert HTML uten alder og rabatt-tekst
         profileInfo.innerHTML = `
-                    <p><strong>Navn:</strong> ${fullName}</p>
-                    <p><strong>E-post:</strong> ${email}</p>
-                    <p><strong>Telefonnummer:</strong> ${phone}</p>
-                    <p><strong>Type:</strong> ${fanType}</p>
-                    <div style="margin-top: var(--space-md); padding: var(--space-md); background: rgba(77, 163, 255, 0.1); border-radius: var(--radius-md);">
-                      <p style="margin: 0 0 var(--space-sm) 0;"><strong>Medlemsstatus:</strong>
-                      <span style="color: ${statusColor};">${statusText}</span></p>
-                      <p style="margin: 0;"><strong>Medlemspris:</strong>
-                      ${membershipPrice.toFixed(2)} kr</p>
-                      ${
-                        membershipStatus !== "active" &&
-                        membershipStatus !== "paid"
-                          ? `<a href="betaling.html" class="btn" style="margin-top: var(--space-md); display: inline-block;">Fullfør betaling</a>`
-                          : ""
-                      }
-                    </div>
-                  `;
+          <p><strong>Navn:</strong> ${fullName}</p>
+          <p><strong>E-post:</strong> ${email}</p>
+          <p><strong>Telefonnummer:</strong> ${phone}</p>
+          <p><strong>Fødselsdato:</strong> ${formattedBirthdate}</p>
+          <p><strong>Type:</strong> ${fanType}</p>
+          <div style="margin-top: var(--space-md); padding: var(--space-md); background: rgba(77, 163, 255, 0.1); border-radius: var(--radius-md);">
+            <p style="margin: 0 0 var(--space-sm) 0;"><strong>Medlemsstatus:</strong>
+            <span style="color: ${statusColor};">${statusText}</span></p>
+            <p style="margin: 0;"><strong>Gjeldende medlemspris:</strong>
+            ${membershipPrice.toFixed(2)} kr</p>
+            <p style="font-size: 0.9em; margin-top: 5px;">${membershipDetails.ageInfo}</p>
+            ${
+              membershipStatus !== "active" &&
+              membershipStatus !== "paid"
+                ? `<a href="betaling.html" class="btn" style="margin-top: var(--space-md); display: inline-block;">Fullfør betaling</a>`
+                : ""
+            }
+          </div>
+        `;
+        
+        // Oppdaterer database-raden hvis prisen har endret seg.
+        // Dette er viktig for at betalingssiden skal ha riktig info neste gang den lastes.
+        if (memberData && memberData.membership_price !== membershipPrice) {
+             const { error: updateError } = await supa
+                .from("members")
+                .update({ 
+                    membership_price: membershipPrice, 
+                    is_junior: membershipDetails.isJunior 
+                })
+                .eq("auth_id", session.user.id);
+            
+            if (updateError) {
+                console.error("Feil ved oppdatering av medlemspris:", updateError);
+            }
+        }
       }
 
-      // Logg ut funksjon
-      async function logout() {
-        if (!supa) {
-          window.location.href = "index.html";
-          return;
-        }
-
-        const { error } = await supa.auth.signOut();
-        if (error) {
-          alert("Feil ved utlogging: " + error.message);
-        } else {
-          window.location.href = "index.html";
-        }
-      }
-
-      // Endre passord funksjon
+      // Endre passord funksjon (UBEHANDLET)
       async function changePassword(event) {
+        // ... (Logikk for passordbytte, uendret fra forrige versjon) ...
         event.preventDefault();
 
         if (!supa) {
-          messageDiv.innerHTML =
+          document.getElementById("password-message").innerHTML =
             '<p style="color: red;">Kan ikke endre passord – Supabase er ikke tilgjengelig.</p>';
           return;
         }
@@ -263,9 +268,7 @@
           return;
         }
 
-        const {
-          data: { user },
-        } = await supa.auth.getUser();
+        const { data: { user } } = await supa.auth.getUser();
 
         const { error: verifyError } = await supa.auth.signInWithPassword({
           email: user.email,
@@ -283,7 +286,8 @@
         });
 
         if (updateError) {
-          messageDiv.innerHTML = `<p style="color: red;">Feil ved endring av passord: ${updateError.message}</p>`;
+          messageError = `Feil ved endring av passord: ${updateError.message}`
+          messageDiv.innerHTML = `<p style="color: red;">${messageError}</p>`;
         } else {
           messageDiv.innerHTML =
             '<p style="color: green;">Passord endret vellykket!</p>';
@@ -291,49 +295,10 @@
         }
       }
 
-      function initPasswordToggles() {
-        document.querySelectorAll(".password-toggle").forEach((btn) => {
-          const targetId = btn.getAttribute("data-target");
-          const input = document.getElementById(targetId);
-          if (!input) return;
-
-          btn.addEventListener("click", () => {
-            const isPassword = input.type === "password";
-            input.type = isPassword ? "text" : "password";
-
-            const img = btn.querySelector("img");
-            if (img) {
-              img.src = isPassword
-                ? "images/eye-close.png"
-                : "images/eye-open.png";
-              img.alt = isPassword ? "Skjul passord" : "Vis passord";
-            }
-          });
-        });
-      }
-
-      function initDropdown() {
-        const dropdown = document.getElementById("settings-dropdown");
-        const toggle = document.getElementById("settings-toggle");
-
-        if (toggle) {
-          toggle.addEventListener("click", (e) => {
-            e.preventDefault();
-            dropdown?.classList.toggle("active");
-          });
-        }
-
-        document.addEventListener("click", (e) => {
-          if (dropdown && !dropdown.contains(e.target)) {
-            dropdown.classList.remove("active");
-          }
-        });
-      }
-
-      document.getElementById("logout-btn").addEventListener("click", logout);
+      document.getElementById("logout-btn").addEventListener("click", logoutUser);
       document.getElementById("logout-link")?.addEventListener("click", (e) => {
         e.preventDefault();
-        logout();
+        logoutUser();
       });
 
       document
@@ -352,8 +317,6 @@
       }
 
       checkAuth();
-      initDropdown();
-      initPasswordToggles();
     </script>
   </body>
 </html>
