@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personvernerklæring - SBS Medlemsside</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="header-content">
+        <img src="logo-placeholder.png" alt="SBS Logo" />
+        <nav id="main-nav">
+          <a href="index.html" class="nav-link active">Hjem</a>
+          <a href="sanger.html" class="nav-link">Sanger</a>
+          <a href="betaling.html" class="nav-link">Betaling</a>
+          <a href="Inlogging.html" class="nav-link auth-link">Logg inn</a>
+          <a href="registrer.html" class="nav-link auth-link">Registrer</a>
+          <div
+            class="dropdown profile-link"
+            id="settings-dropdown"
+            style="display: none"
+          >
+            <a href="#" class="nav-link dropdown-toggle" id="settings-toggle">
+              Innstillinger
+            </a>
+            <div class="dropdown-menu">
+              <a href="profil.html" class="dropdown-item"> Min profil </a>
+              <a href="profil.html#change-password" class="dropdown-item">
+                Endre passord
+              </a>
+              <a href="mailto:kontakt@sbs.no" class="dropdown-item">
+                Kontakt oss
+              </a>
+              <a href="#" id="logout-link" class="dropdown-item danger">
+                Logg ut
+              </a>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="card">
+        <h2>Personvernerklæring for SBS Medlemsside</h2>
+        <p>Sist oppdatert: 9. desember 2025</p>
+
+        <h3>1. Behandlingsansvarlig</h3>
+        <p>
+          SBS er behandlingsansvarlig for behandlingen av personopplysningene vi
+          samler inn i forbindelse med ditt medlemskap og bruk av vår nettside.
+          Vår kontaktinformasjon er: Eilert Myrann
+        </p>
+        <p><strong>E-post:</strong>eilertmyr@gmail.com</p>
+
+        <h3>2. Hvilke Opplysninger Samles Inn og Hvorfor?</h3>
+        <p>
+          Vi samler inn og behandler følgende personopplysninger for å
+          administrere ditt medlemskap, sende ut kontingent, og sikre riktig
+          prisberegning:
+        </p>
+        <ul>
+          <li>
+            <strong>E-postadresse:</strong> Brukes som brukernavn for innlogging
+            og for å sende viktig medlemsinformasjon og betalingsvarsler.
+          </li>
+          <li>
+            <strong>Fullt Navn:</strong> Brukes for identifikasjon og
+            medlemsregister.
+          </li>
+          <li>
+            <strong>Fødselsdato:</strong> Brukes utelukkende for å fastslå din
+            alder (under 18/over 18) for å beregne korrekt medlemskontingent
+            (junior/senior pris).
+          </li>
+          <li>
+            <strong>Telefonnummer:</strong> Brukes for rask kontakt ved viktige
+            hendelser eller betalingspåminnelser.
+          </li>
+          <li>
+            <strong>Medlemsstatus og -historikk:</strong> Brukes for å bekrefte
+            betalt kontingent og tilgang til medlemsfordeler.
+          </li>
+        </ul>
+
+        <h3>3. Grunnlag for Behandlingen (GDPR)</h3>
+        <p>
+          Behandlingen av dine personopplysninger er basert på følgende
+          grunnlag:
+        </p>
+        <ul>
+          <li>
+            <span class="bolder">Samtykke:</span> Ved registrering gir du ditt samtykke til behandlingen
+            av opplysninger nødvendig for å utføre medlemsadministrasjonen.
+          </li>
+          <li>
+            <span class="bolder">Avtaleoppfyllelse:</span> Behandlingen er nødvendig for å oppfylle
+            medlemsavtalen med deg (f.eks. prisberegning og tilgangsstyring).
+          </li>
+        </ul>
+
+        <h3>4. Utlevering til Tredjeparter</h3>
+        <p>
+          Vi bruker Supabase for autentisering og datalagring. Disse dataene
+          behandles på sikre servere og er beskyttet av kryptering.
+        </p>
+        <p>
+          Vi vil ikke dele, selge eller bytte dine personopplysninger med andre
+          tredjeparter uten ditt uttrykkelige samtykke, med unntak av lovpålagte
+          krav.
+        </p>
+
+        <h3>5. Dine Rettigheter</h3>
+        <p>Som medlem har du rett til:</p>
+        <ul>
+          <li>
+            <span class="bolder">Innsyn:</span> Du kan be om innsyn i hvilke opplysninger vi har lagret
+            om deg.
+          </li>
+          <li>
+            <span class="bolder">Korrigering</span> Du kan be om at feilaktige eller ufullstendige
+            opplysninger rettes.
+          </li>
+          <li>
+            <span class="bolder">Sletting (Retten til å bli glemt):</span> Du kan be om at vi sletter
+            alle data vi har om deg. Vår nettside har en funksjon for sletting
+            på profil-siden.
+          </li>
+        </ul>
+        <p>Henvendelser om dine rettigheter kan rettes til eilertmyr@gmail.com.</p>
+      </div>
+    </main>
+
+    <footer>
+        <p>
+          © 2025 SBS – Stabæk Bandy Support |
+          <a href="personvern.html">Personvernerklæring</a>
+        </p>
+        <div class="footer-links">
+          <a href="eilertmyr@gmail.com">
+            <img src="images/mail.png" alt="Email-logo" class="logo" /> Kontakt
+            oss
+          </a>
+          <a
+            href="https://www.instagram.com/stabaek.klakken"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src="images/instagram.png" alt="Instagram-logo" class="logo" />
+            Instagram
+          </a>
+        </div>
+      </footer>
+  </body>
+</html>

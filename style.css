@@ -669,6 +669,28 @@ footer a:hover {
     background: linear-gradient(135deg, #a71d2a 0%, #dc3545 100%);
     box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
 }
+/* Nytt for å style info-boksen */
+.info-box {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: var(--radius-md);
+    background-color: #f9f9f9;
+}
+
+/* Stil for checkbox og lenke */
+.checkbox-container {
+    display: block;
+    cursor: pointer;
+    font-size: 0.95em;
+    user-select: none;
+}
+.checkbox-container input {
+    margin-right: 8px;
+}
+.bold {
+    font: bold;
+}
 /* Styling for Datovelger (input type="date") */
 
 /* 1. Skjul nettleser-standard ikoner og piler */
